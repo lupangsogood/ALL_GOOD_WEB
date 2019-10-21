@@ -40,10 +40,10 @@ class ShipmentProductForms extends Component {
           </td>
           <td>{element.name}</td>
           <td>
-            <Badge color="success">Active</Badge>
+            <Badge color="warning">Waiting</Badge>
           </td>
           <td>
-            <Button color="danger">Wating</Button>
+            <Button color="danger">Confirm</Button>
           </td>
         </tr>
       );

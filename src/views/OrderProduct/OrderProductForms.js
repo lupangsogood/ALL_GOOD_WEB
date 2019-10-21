@@ -10,61 +10,120 @@ import {
   PaginationLink,
   Row,
   Table,
-  Button
+  Button,
+  Input
 } from "reactstrap";
+
+const imageUrl =
+  "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350";
 
 const element = [
   {
-    key: 1,
-    name: "Test"
+    order_id: 1,
+    order_date: "22/10/2019",
+    order_detail: "",
+    order_amount: "5,500",
+    order_slip: imageUrl,
+    order_tracking: "",
+    order_status: "",
+    order_action: ""
   },
   {
-    key: 2,
-    name: "Test1"
+    order_id: 2,
+    order_date: "22/10/2019",
+    order_detail: "",
+    order_amount: "3,025",
+    order_slip: imageUrl,
+    order_tracking: "",
+    order_status: "",
+    order_action: ""
   },
   {
-    key: 3,
-    name: "Test2"
+    order_id: 3,
+    order_date: "22/10/2019",
+    order_detail: "",
+    order_amount: "1,500",
+    order_slip: imageUrl,
+    order_tracking: "",
+    order_status: "",
+    order_action: ""
   }
 ];
 
 class OrderProductForms extends Component {
+  cancleOrder = ordersId => {
+    console.log(ordersId);
+  };
+
   setTableData = () => {
     return element.map(element => {
       return (
-        <tr key={element.key}>
-          <td>{element.key}</td>
-          <td>2012/01/01</td>
-          <td>{element.name}</td>
-          <td>
-            <Badge color="success">Active</Badge>
+        <tr key={element.order_id}>
+          <td align="center">{element.order_id}</td>
+          <td align="center">2012/01/01</td>
+          <td align="center">
+            <Button color="info">
+              <i className="cui-monitor"></i>
+            </Button>
           </td>
-          <td>
-            <Button color="danger">Wating</Button>
+          <td align="center">{element.order_amount}</td>
+          <td align="center">
+            <img src={element.order_slip} width="100" height="100" />
+          </td>
+          <td align="center">
+            <Input>waiting</Input>
+          </td>
+          <td align="center">
+            <Badge color="warning">waiting</Badge>
+          </td>
+          <td align="center">
+            <Button
+              color="danger"
+              onClick={() => this.cancleOrder(element.key)}
+            >
+              Cancle Order
+            </Button>
           </td>
         </tr>
       );
     });
   };
+
   render() {
     let tableTest = this.setTableData();
     return (
       <div className="animated fadeIn">
+        <Row>
+          <Col className="justify-content-end" align="right" xs="12" xl="12">
+            <Button color="warning" style={{ marginRight: "10px" }}>
+              <i className="cui-cloud-download"></i>
+              RELOAD
+            </Button>
+            <Button color="success">
+              <i className="cui-task"></i>
+              CONFIRM SHIPMENT
+            </Button>
+          </Col>
+        </Row>
         <Row className="row justify-content-md-center ">
-          <Col xs="12" lg="11" xl="12">
+          <Col xs="12" xl="12">
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i>รายการการสั่งซื้อ
               </CardHeader>
+
               <CardBody>
                 <Table responsive striped>
                   <thead>
-                    <tr>
-                      <th>Username</th>
-                      <th>Date registered</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Paid</th>
+                    <tr align="center">
+                      <th>Order_ID</th>
+                      <th>Order_Date</th>
+                      <th>Order_Detail</th>
+                      <th>Order_Amount</th>
+                      <th>Order_Slip</th>
+                      <th>Order_Tracking</th>
+                      <th>Order_Status</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>{tableTest}</tbody>
