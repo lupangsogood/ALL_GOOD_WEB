@@ -1,7 +1,8 @@
 import ActionRedux from "../Action/action";
+import { combineReducers } from "redux";
 
 const initialState = {
-  testFetch: "",
+  loggedOut: false,
   fetchDataSuccress: {
     head: "",
     body: "",
@@ -9,23 +10,27 @@ const initialState = {
   }
 };
 
+const appReducerState = {};
+
+const appReducer = combineReducers({
+  loggedOut: (loggedOut = "true") => loggedOut
+});
+
 const testFetchAPI = (state = initialState, action) => {
-  //   switch (action.type) {
-  //     case ActionRedux.Types.FETCH_DATA_SUCCESS:
-  //       console.log("SUCCESS");
-  //       return {
-  //         ...state,
-  //         testFetch: "action.data"
-  //       };
-  //       break;
-  //     default:
-  //       console.log("FAILED");
-  //       break;
-  //   }
-  return {
-    ...state,
-    testFetch: "testAPI"
-  };
+  // console.log(action.type);
+  switch (action.type) {
+    case ActionRedux.Types.FETCH_DATA_SUCCESS:
+      return {
+        productData: action.data
+      };
+
+    case ActionRedux.Types.CLEAR_PRODUCT_DATA:
+      return appReducer(state, action);
+    default:
+      console.log("Unknown ACTION");
+      return {};
+      break;
+  }
 };
 
 export default testFetchAPI;

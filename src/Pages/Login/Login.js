@@ -107,8 +107,8 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => ({
-  testStateAPI: state.ProductReducer.testFetch,
-  testLogin: state.UserReducer.state
+  testStateAPI: state.rootReducer,
+  testLogin: state.rootReducer
 });
 
 const mapDispatchToProps = dispatch => ({

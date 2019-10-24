@@ -21,4 +21,13 @@ const saveState = state => {
   }
 };
 
-export { loadState, saveState };
+// const clearState = state => {
+//   try {
+//     state = [];
+//     localStorage.setItem("store", state);
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
+export { loadState, saveState, clearState };

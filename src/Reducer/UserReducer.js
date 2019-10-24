@@ -1,43 +1,40 @@
 import ActionRedux from "../Action/action";
 import { combineReducers } from "redux";
 
-const appReducer = combineReducers({
-  state: (state = {}) => state
-});
-
 const initialState = {
-  userState: {
+  loggedOut: false,
+  state: {
     loggedIn: false,
     username: "",
     password: ""
   }
 };
 
+const appReducer = combineReducers({
+  loggedOut: (loggedOut = "true") => loggedOut
+});
+
 const loginState = (state = initialState, action) => {
-  //   console.log(action.type);
+  console.log(action.type);
   switch (action.type) {
     case ActionRedux.Types.USER_LOGIN:
       console.log("USER_LOGIN");
+      state = [];
       state = {
-        loggedIn: false,
-        username: "",
-        password: ""
-      };
-      return {
-        ...state.userState,
         loggedIn: true,
         username: "test",
-        password: "testpassword"
+        password: "test"
       };
+      return state;
 
     case ActionRedux.Types.USER_LOGOUT:
       console.log("USER_LOGOUT");
-      state = [];
+      state = {};
       return appReducer(state, action);
 
     default:
       console.log("Unknown action");
-      return appReducer(state, action);
+      return state;
   }
 };
 
