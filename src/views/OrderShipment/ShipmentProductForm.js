@@ -50,7 +50,6 @@ class ShipmentProductForms extends Component {
     });
   };
   render() {
-    let tableTest = this.setTableData();
     return (
       <div className="animated fadeIn">
         <Row className="row justify-content-md-center ">
@@ -70,7 +69,7 @@ class ShipmentProductForms extends Component {
                       <th>Paid</th>
                     </tr>
                   </thead>
-                  <tbody>{tableTest}</tbody>
+                  <tbody>{this.setTableData()}</tbody>
                 </Table>
                 <Pagination>
                   <PaginationItem disabled>
