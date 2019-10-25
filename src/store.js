@@ -11,18 +11,7 @@ const persistConfig = {
   storage
 };
 
-const appReducer = combineReducers({
-  reducer
-});
-
-const rootReducer = (state, action) => {
-  if (action.type === "USER_LOGOUT") {
-    state = undefined;
-  }
-  return appReducer(state, action);
-};
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, reducer);
 
 export default () => {
   let store = createStore(persistedReducer, applyMiddleware(thunk, logger));

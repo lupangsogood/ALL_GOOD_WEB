@@ -1,5 +1,6 @@
 import Axios from "axios";
 import storage from "redux-persist/lib/storage";
+import { func } from "prop-types";
 
 const testAPI = "https://jsonplaceholder.typicode.com/";
 const Types = {
@@ -32,9 +33,25 @@ export function logout() {
   };
 }
 
+//----------------------------------------------------------------
+
+export function addProduct(product) {
+  console.log(product);
+}
+
+export function editProduct(
+  productName,
+  productDesc,
+  productCost,
+  productPrice,
+  productQuan,
+  productImage
+) {}
+
 export default {
   Types,
   testFetchData,
   login,
-  logout
+  logout,
+  addProduct
 };

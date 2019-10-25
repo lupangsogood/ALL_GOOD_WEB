@@ -13,6 +13,9 @@ import {
   Row
 } from "reactstrap";
 
+import { connect } from "react-redux";
+import Action from "../../Action/action";
+
 class AddProductForms extends Component {
   constructor(props) {
     super(props);
@@ -22,15 +25,15 @@ class AddProductForms extends Component {
     this.state = {
       collapse: true,
       fadeIn: true,
-      timeout: 300
-      // addProductState: {
-      //   product_name: "",
-      //   product_desc: "",
-      //   product_price: "",
-      //   price: "",
-      //   quantity: "",
-      //   product_image: ""
-      // }
+      timeout: 300,
+      addProductState: {
+        // product_name: "",
+        // product_desc: "",
+        // product_price: "",
+        // price: "",
+        // quantity: "",
+        // product_image: ""
+      }
     };
   }
 
@@ -47,17 +50,22 @@ class AddProductForms extends Component {
   onHandleChange = e => {
     console.log(e.target.name);
     let name = e.target.name;
+    let value = e.target.value;
     this.setState({
-      ...this.state.addProductState,
-
-      [name]: e.target.value
+      addProductState: {
+        ...this.state.addProductState,
+        [name]: value
+      }
     });
     console.log(this.state);
   };
 
-  onSubmit = values => {
-    console.log(values);
+  onSubmit = () => {
+    // console.log(this.state.addProductState);
+    this.props.addProduct(this.state.addProductState);
   };
+
+  onReset = () => {};
 
   render() {
     return (
@@ -69,7 +77,7 @@ class AddProductForms extends Component {
                 <strong>เพิ่มสินค้า</strong>
               </CardHeader>
               <CardBody>
-                <Form>
+                <Form type="submit">
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">ชื่อสินค้า</Label>
@@ -166,10 +174,20 @@ class AddProductForms extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary">
+                <Button
+                  type="submit"
+                  size="sm"
+                  color="primary"
+                  onClick={this.onSubmit}
+                >
                   <i className="fa fa-dot-circle-o"></i> Submit
                 </Button>
-                <Button type="reset" size="sm" color="danger">
+                <Button
+                  type="reset"
+                  size="sm"
+                  color="danger"
+                  onClick={this.onReset}
+                >
                   <i className="fa fa-ban"></i> Reset
                 </Button>
               </CardFooter>
@@ -181,4 +199,13 @@ class AddProductForms extends Component {
   }
 }
 
-export default AddProductForms;
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({
+  addProduct: product => dispatch(Action.addProduct(product))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddProductForms);

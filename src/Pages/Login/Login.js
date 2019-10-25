@@ -24,7 +24,7 @@ class Login extends Component {
 
   componentDidMount() {
     // this.props.testAPI();
-    // console.log(this.props.testStateAPI);
+    console.log(this.props.testLogin);
   }
 
   loginBtn = () => {
@@ -66,7 +66,6 @@ class Login extends Component {
                           placeholder="Username"
                           autoComplete="username"
                           onChange={this.inputTxtLogin}
-                          value={this.props.testStateAPI}
                         />
                       </InputGroup>
                       <InputGroup className="mb-4">
@@ -107,8 +106,8 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => ({
-  testStateAPI: state.rootReducer,
-  testLogin: state.rootReducer
+  testStateAPI: state.ProductReducer,
+  testLogin: state.UserReducer
 });
 
 const mapDispatchToProps = dispatch => ({
