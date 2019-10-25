@@ -16,21 +16,30 @@ const appReducer = combineReducers({
   loggedOut: (loggedOut = "true") => loggedOut
 });
 
-const testFetchAPI = (state = initialState, action) => {
+const ProductReducer = (state = initialState, action) => {
   // console.log(action.type);
   switch (action.type) {
     case ActionRedux.Types.FETCH_DATA_SUCCESS:
       return {
-        productData: action.data
+        result: action.data
+      };
+
+    case ActionRedux.Types.FETCH_DATA_FAILURE:
+      return {
+        result: action.data,
+        loading: false
       };
 
     case ActionRedux.Types.CLEAR_PRODUCT_DATA:
       return appReducer(state, action);
     default:
       console.log("Unknown ACTION");
-      return {};
+      return {
+        result: action.data,
+        loading: false
+      };
       break;
   }
 };
 
-export default testFetchAPI;
+export default ProductReducer;

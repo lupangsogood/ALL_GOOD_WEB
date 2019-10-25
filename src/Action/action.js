@@ -1,8 +1,11 @@
 import Axios from "axios";
 import storage from "redux-persist/lib/storage";
 import { func } from "prop-types";
+import FormData from "form-data";
 
-const testAPI = "https://jsonplaceholder.typicode.com/";
+const ALL_GOOD_BROWNIE_API = "http://allgood-brownie.herokuapp.com/api/";
+const config = { headers: { "Content-Type": "multipart/form-data" } };
+
 const Types = {
   USER_LOGIN: "USER_LOGIN",
   USER_LOGOUT: "USER_LOGOUT",
@@ -11,9 +14,20 @@ const Types = {
   CLEAR_PRODUCT_DATA: "CLEAR_PRODUCT_DATA"
 };
 
+const API_VARIABLE = {
+  product_name: "product_name",
+  product_unit_name: "product_unit_name",
+  product_desc: "product_desc",
+  product_rating: "product_rating",
+  type_id: "type_id",
+  image: "image",
+  product_quantity: "product_quantity",
+  product_price: "product_price"
+};
+
 export function testFetchData() {
   return dispatch => {
-    Axios.get(testAPI + "posts").then(response => {
+    Axios.get(ALL_GOOD_BROWNIE_API + "posts").then(response => {
       dispatch({ type: Types.FETCH_DATA_SUCCESS, data: response.data });
     });
   };
@@ -36,7 +50,44 @@ export function logout() {
 //----------------------------------------------------------------
 
 export function addProduct(product) {
-  console.log(product);
+  let formData = new FormData();
+  return dispatch => {
+    try {
+      formData.append(API_VARIABLE.product_name, product.product_name);
+      formData.append(API_VARIABLE.product_unit_name, "unit");
+      formData.append(API_VARIABLE.product_desc, product.product_desc);
+      formData.append(API_VARIABLE.product_rating, "0");
+      formData.append(API_VARIABLE.type_id, "1");
+      formData.append(
+        API_VARIABLE.image,
+        product.product_image_file,
+        product.product_image
+      );
+      formData.append(API_VARIABLE.product_quantity, product.quantity);
+      formData.append(API_VARIABLE.product_price, product.product_price);
+
+      Axios.post(ALL_GOOD_BROWNIE_API + "product", formData, config)
+        .then(response => {
+          console.log(response);
+          switch (response.data.head.statusCode) {
+            case 200:
+              dispatch({ type: Types.FETCH_DATA_SUCCESS, data: "SUCCESS" });
+
+              break;
+
+            default:
+              dispatch({ type: Types.FETCH_DATA_FAILURE, data: "FAILURE" });
+              break;
+          }
+        })
+        .catch(error => {
+          console.log(error.message);
+          dispatch({ type: Types.FETCH_DATA_FAILURE, data: "FAILURE" });
+        });
+    } catch (error) {
+      dispatch({ type: Types.FETCH_DATA_FAILURE, data: "FAILURE" });
+    }
+  };
 }
 
 export function editProduct(

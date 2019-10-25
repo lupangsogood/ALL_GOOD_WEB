@@ -15,7 +15,6 @@ const appReducer = combineReducers({
 });
 
 const loginState = (state = initialState, action) => {
-  console.log(action.type);
   switch (action.type) {
     case ActionRedux.Types.USER_LOGIN:
       console.log("USER_LOGIN");
