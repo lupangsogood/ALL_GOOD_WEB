@@ -1,44 +1,42 @@
 import ActionRedux from "../Action/action";
-import { combineReducers } from "redux";
+// import { combineReducers } from "redux";
 
 const initialState = {
   loggedOut: false,
-  fetchDataSuccress: {
+  state: {
     head: "",
     body: "",
     message: ""
   }
 };
 
-const appReducerState = {};
+// const appReducerState = {};
 
-const appReducer = combineReducers({
-  loggedOut: (loggedOut = "true") => loggedOut
-});
+// const appReducer = combineReducers({
+//   loggedOut: (loggedOut = "true") => loggedOut
+// });
 
 const ProductReducer = (state = initialState, action) => {
   // console.log(action.type);
   switch (action.type) {
-    case ActionRedux.Types.FETCH_DATA_SUCCESS:
-      return {
-        result: action.data
+    case ActionRedux.Types.ADD_PRODUCT_SUCCESS:
+      console.log("FROM REDUCER " + action.type);
+      state = {
+        result: action.data,
+        loading: true
       };
-
-    case ActionRedux.Types.FETCH_DATA_FAILURE:
-      return {
+      return state;
+    case ActionRedux.Types.ADD_PRODUCT_FAILURE:
+      console.log("FROM REDUCER " + action.type);
+      state = [];
+      state = {
         result: action.data,
         loading: false
       };
+      return state;
 
-    case ActionRedux.Types.CLEAR_PRODUCT_DATA:
-      return appReducer(state, action);
     default:
-      console.log("Unknown ACTION");
-      return {
-        result: action.data,
-        loading: false
-      };
-      break;
+      return state;
   }
 };
 

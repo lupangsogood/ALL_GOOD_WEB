@@ -68,7 +68,12 @@ class OrderProductForms extends Component {
           </td>
           <td align="center">{element.order_amount}</td>
           <td align="center">
-            <img src={element.order_slip} width="100" height="100" />
+            <img
+              src={element.order_slip}
+              alt="รูปสลิปสั่งซื้อ"
+              width="100"
+              height="100"
+            />
           </td>
           <td align="center">
             <Input>waiting</Input>

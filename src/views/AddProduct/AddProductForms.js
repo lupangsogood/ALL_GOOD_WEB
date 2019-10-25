@@ -62,9 +62,14 @@ class AddProductForms extends Component {
         );
         break;
       case "error":
-        NotificationManager.error("Error message", "Click me!", 5000, () => {
-          alert("callback");
-        });
+        NotificationManager.error(
+          "กรุณาตรวจสอบข้อมูลสินค้า",
+          "เกิดข้อผิดพลาด",
+          5000,
+          () => {}
+        );
+        break;
+      default:
         break;
     }
   };
@@ -110,23 +115,25 @@ class AddProductForms extends Component {
 
   componentWillReceiveProps(nextProps) {
     console.log(nextProps);
+
     let loading = this.state.loading;
-    let result = this.props.resultTask.result;
-    if (nextProps.resultTask.loading != loading) {
-      if (result == "SUCCESS") {
-        this.props.history.push("/lists");
+    let result = nextProps.resultTask.result;
+    console.log(nextProps.resultTask);
+
+    if (result === "SUCCESS") {
+      this.props.history.push("/list");
+      // window.location.replace("/list");
+    } else {
+      if (nextProps.resultTask.loading !== loading) {
       } else {
+        console.log("FAILURE");
         this.setState({
           loading: false
         });
         this.createNotification("error");
       }
-    } else {
-      this.setState({
-        loading: false
-      });
-      this.createNotification("error");
     }
+
     // let loading = this.state.loading;
     // let resultLoding = this.props.resultTask.result;
     // if (resultLoding == loading) {

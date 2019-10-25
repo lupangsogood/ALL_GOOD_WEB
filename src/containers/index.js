@@ -1,15 +1,15 @@
 import React, { Component, Suspense } from "react";
 
 import HeaderLayout from "./HeaderLayout";
-import BodyLayout from "./BodyLayout";
-import FooterLayout from "./FooterLayoyt";
+// import BodyLayout from "./BodyLayout";
+// import FooterLayout from "./FooterLayoyt";
 import { Container } from "reactstrap";
 import { Redirect, Route, Switch } from "react-router-dom";
 import * as router from "react-router-dom";
 
 import {
-  AppAside,
-  AppFooter,
+  // AppAside,
+  // AppFooter,
   AppHeader,
   AppSidebar,
   AppSidebarFooter,

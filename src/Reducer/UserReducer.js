@@ -32,7 +32,7 @@ const loginState = (state = initialState, action) => {
       return appReducer(state, action);
 
     default:
-      console.log("Unknown action");
+      // console.log("Unknown action");
       return state;
   }
 };

@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import ProductReducer from "./ProductReducer";
 import UserReducer from "./UserReducer";
+import FetchProductReducer from "./FetchProductReducer";
 
 const appReducer = combineReducers({
+  FetchProductReducer,
   ProductReducer,
   UserReducer
 });

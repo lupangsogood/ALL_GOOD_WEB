@@ -1,8 +1,8 @@
-import React, { Component, lazy, Suspense } from "react";
+import React, { Component, Suspense } from "react";
 // import { Bar, Line } from 'react-chartjs-2';
 
 import {
-  Badge,
+  // Badge,
   Button,
   ButtonGroup,
   Card,
@@ -17,46 +17,28 @@ import {
 } from "reactstrap";
 import Action from "../../Action/action";
 import { connect } from "react-redux";
-// import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { getStyle, hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
+// import { getStyle, hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
+// import returnStoreAndPersistor from "../../store";
 
 console.log("init Dashboard");
-const Widget03 = lazy(() => import("../../views/Widgets/Widget03"));
-
-const brandPrimary = getStyle("--primary");
-const brandSuccess = getStyle("--success");
-const brandInfo = getStyle("--info");
-const brandWarning = getStyle("--warning");
-const brandDanger = getStyle("--danger");
 
 // Main Chart
 
 //Random Numbers
-function random(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
+// function random(min, max) {
+//   return Math.floor(Math.random() * (max - min + 1) + min);
+// }
 
-var elements = 27;
-var data1 = [];
-var data2 = [];
-var data3 = [];
-
-for (var i = 0; i <= elements; i++) {
-  data1.push(random(50, 200));
-  data2.push(random(80, 100));
-  data3.push(65);
-}
-
-const productData = [
-  {
-    product_id: "1",
-    product_name: "บราวนี่",
-    product_img_url: "https://i.ytimg.com/vi/zF0j1fGWwp0/maxresdefault.jpg",
-    price: "100",
-    product_price: "150",
-    quantity: "10"
-  }
-];
+// const productData = [
+//   {
+//     product_id: "1",
+//     product_name: "บราวนี่",
+//     product_img_url: "https://i.ytimg.com/vi/zF0j1fGWwp0/maxresdefault.jpg",
+//     price: "100",
+//     product_price: "150",
+//     quantity: "10"
+//   }
+// ];
 
 class Dashboard extends Component {
   constructor(props) {
@@ -86,8 +68,25 @@ class Dashboard extends Component {
     });
   };
 
-  componentDidMount() {
-    this.props.fetchProductData();
+  async componentWillMount() {
+    await this.props.fetchProductData();
+  }
+  componentDidMount() {}
+
+  componentWillUpdate(nextProps, nextState) {
+    // console.log(nextProps);
+    // let productData = nextProps.ProductReducer;
+    // console.log(productData);
+    // this.settingTable(productData);
+  }
+
+  componentDidUpdate(prevProps) {
+    // console.log(this.props.productDataFetch);
+    // let productData = this.props.productDataFetch.product;
+    // console.log(productData);
+    // console.log(prevProps);
+    // const { store } = returnStoreAndPersistor();
+    // console.log(store.getState());
   }
 
   deleteProduct = () => {
@@ -113,7 +112,7 @@ class Dashboard extends Component {
   };
 
   ModalDelete = () => {
-    let product_id = this.state.product.product_id;
+    // let product_id = this.state.product.product_id;
     let product_name = this.state.product.product_name;
     return (
       <div>
@@ -136,25 +135,32 @@ class Dashboard extends Component {
     );
   };
 
-  settingTable = () => {
-    return productData.map(data => {
+  settingTable = productData => {
+    console.log(productData.body.data.product);
+    let dumpData = productData.body.data.product;
+    return dumpData.map(data => {
       return (
         <tr key={data.product_id}>
           <td className="text-center">{data.product_id}</td>
           <td>
             <div>{data.product_name}</div>
             <div className="small text-muted">
-              <span>New</span> | Registered: Jan 1, 2015
+              <span>รายละเอียด</span> | {data.product_desc}
             </div>
           </td>
           <td className="text-center">
-            <img src={data.product_img_url} width="100" height="100" />
+            <img
+              src={data.product_img_url}
+              alt="รูปภาพสินค้า"
+              width="100"
+              height="100"
+            />
           </td>
           <td>
             <div className="text-center">{data.product_price} </div>
           </td>
-          <td className="text-center">{data.price}</td>
-          <td className="text-center">{data.quantity}</td>
+          <td className="text-center">{data.product_price}</td>
+          <td className="text-center">{data.product_quantity}</td>
 
           <td className="text-center">
             <ButtonGroup>
@@ -210,7 +216,9 @@ class Dashboard extends Component {
                         <th className="text-center">Delete</th>
                       </tr>
                     </thead>
-                    <tbody>{this.settingTable()}</tbody>
+                    <tbody>
+                      {this.settingTable(this.props.productDataFetch)}
+                    </tbody>
                   </Table>
                 </CardBody>
               </Card>
@@ -223,13 +231,17 @@ class Dashboard extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  productDataFetch: state.FetchProductReducer
+});
+
 const mapDispatchToProps = dispatch => ({
   fetchProductData: () => {
-    dispatch(Action.testFetchData());
+    dispatch(Action.fetchProduct());
   }
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Dashboard);

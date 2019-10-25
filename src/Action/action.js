@@ -1,6 +1,6 @@
 import Axios from "axios";
-import storage from "redux-persist/lib/storage";
-import { func } from "prop-types";
+// import storage from "redux-persist/lib/storage";
+// import { func } from "prop-types";
 import FormData from "form-data";
 
 const ALL_GOOD_BROWNIE_API = "http://allgood-brownie.herokuapp.com/api/";
@@ -9,9 +9,13 @@ const config = { headers: { "Content-Type": "multipart/form-data" } };
 const Types = {
   USER_LOGIN: "USER_LOGIN",
   USER_LOGOUT: "USER_LOGOUT",
+  FETCH_PRODUCT_SUCCESS: "FETCH_PRODUCT_SUCCESS",
+  FETCH_PRODUCT_FAILURE: "FETCH_PRODUCT_FAILURE",
   FETCH_DATA_SUCCESS: "FETCH_DATA_SUCCESS",
   FETCH_DATA_FAILURE: "FETCH_DATA_FAILURE",
-  CLEAR_PRODUCT_DATA: "CLEAR_PRODUCT_DATA"
+  CLEAR_PRODUCT_DATA: "CLEAR_PRODUCT_DATA",
+  ADD_PRODUCT_SUCCESS: "ADD_PRODUCT_SUCCESS",
+  ADD_PRODUCT_FAILURE: "ADD_PRODUCT_FAILURE"
 };
 
 const API_VARIABLE = {
@@ -47,6 +51,29 @@ export function logout() {
   };
 }
 
+//-----------------------------------------------------------------
+
+export function fetchProduct() {
+  return dispatch => {
+    Axios.get(ALL_GOOD_BROWNIE_API + "product").then(response => {
+      switch (response.data.head.statusCode) {
+        case 200:
+          console.log(response.data.body);
+          dispatch({
+            type: Types.FETCH_PRODUCT_SUCCESS,
+            head: "SUCCESS",
+            data: response.data.body
+          });
+          break;
+
+        default:
+          dispatch({ type: Types.FETCH_PRODUCT_FAILURE, data: "FAILURE" });
+          break;
+      }
+    });
+  };
+}
+
 //----------------------------------------------------------------
 
 export function addProduct(product) {
@@ -71,21 +98,20 @@ export function addProduct(product) {
           console.log(response);
           switch (response.data.head.statusCode) {
             case 200:
-              dispatch({ type: Types.FETCH_DATA_SUCCESS, data: "SUCCESS" });
-
+              dispatch({ type: Types.ADD_PRODUCT_SUCCESS, data: "SUCCESS" });
               break;
 
             default:
-              dispatch({ type: Types.FETCH_DATA_FAILURE, data: "FAILURE" });
+              dispatch({ type: Types.ADD_PRODUCT_FAILURE, data: "FAILURE" });
               break;
           }
         })
         .catch(error => {
           console.log(error.message);
-          dispatch({ type: Types.FETCH_DATA_FAILURE, data: "FAILURE" });
+          dispatch({ type: Types.ADD_PRODUCT_FAILURE, data: "FAILURE" });
         });
     } catch (error) {
-      dispatch({ type: Types.FETCH_DATA_FAILURE, data: "FAILURE" });
+      dispatch({ type: Types.ADD_PRODUCT_FAILURE, data: "FAILURE" });
     }
   };
 }
@@ -104,5 +130,6 @@ export default {
   testFetchData,
   login,
   logout,
-  addProduct
+  addProduct,
+  fetchProduct
 };

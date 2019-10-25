@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Badge,
   UncontrolledDropdown,
@@ -10,11 +10,7 @@ import {
   NavItem
 } from "reactstrap";
 import PropTypes from "prop-types";
-import {
-  AppAsideToggler,
-  AppNavbarBrand,
-  AppSidebarToggler
-} from "@coreui/react";
+import { AppNavbarBrand, AppSidebarToggler } from "@coreui/react";
 import sygnet from "../../src/assets/img/brand/sygnet.svg";
 import dog from "../../src/assets/img/test.jpg";
 import { connect } from "react-redux";
