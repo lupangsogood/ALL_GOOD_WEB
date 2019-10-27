@@ -15,7 +15,9 @@ const Types = {
   FETCH_DATA_FAILURE: "FETCH_DATA_FAILURE",
   CLEAR_PRODUCT_DATA: "CLEAR_PRODUCT_DATA",
   ADD_PRODUCT_SUCCESS: "ADD_PRODUCT_SUCCESS",
-  ADD_PRODUCT_FAILURE: "ADD_PRODUCT_FAILURE"
+  ADD_PRODUCT_FAILURE: "ADD_PRODUCT_FAILURE",
+  FETCH_ORDER_SUCCESS: "FETCH_ORDER_SUCCESS",
+  FETCH_ORDER_FAILURE: "FETCH_ORDER_FAILURE"
 };
 
 const API_VARIABLE = {
@@ -125,11 +127,25 @@ export function editProduct(
   productImage
 ) {}
 
+//----------------------------------------------------------------------
+
+export function fetchOrder() {
+  return dispatch => {
+    Axios.get(ALL_GOOD_BROWNIE_API + "order").then(response => {
+      dispatch({
+        type: Types.FETCH_ORDER_SUCCESS,
+        data: response.data.body.data.order
+      });
+    });
+  };
+}
+
 export default {
   Types,
   testFetchData,
   login,
   logout,
   addProduct,
-  fetchProduct
+  fetchProduct,
+  fetchOrder
 };

@@ -106,13 +106,18 @@ class Dashboard extends Component {
     <div className="animated fadeIn pt-1 text-center">Loading...</div>
   );
 
-  editProduct = product_id => {
-    console.log(product_id);
-    this.props.history.push("/products/edit");
+  editProduct = product => {
+    // console.log(product);
+    this.props.history.push({
+      pathname: "/products/edit",
+      search: "?product_id=" + product.product_id,
+      state: product
+    });
+    // this.props.history.push("/products/edit", { product_id: "1" });
   };
 
   ModalDelete = () => {
-    // let product_id = this.state.product.product_id;
+    let product_id = this.state.product.product_id;
     let product_name = this.state.product.product_name;
     return (
       <div>
@@ -136,7 +141,7 @@ class Dashboard extends Component {
   };
 
   settingTable = productData => {
-    console.log(productData.body.data.product);
+    // console.log(productData.body.data.product);
     let dumpData = productData.body.data.product;
     return dumpData.map(data => {
       return (
@@ -164,10 +169,7 @@ class Dashboard extends Component {
 
           <td className="text-center">
             <ButtonGroup>
-              <Button
-                color="warning"
-                onClick={() => this.editProduct(data.product_id)}
-              >
+              <Button color="warning" onClick={() => this.editProduct(data)}>
                 <i className="cui-wrench"></i>
               </Button>
             </ButtonGroup>

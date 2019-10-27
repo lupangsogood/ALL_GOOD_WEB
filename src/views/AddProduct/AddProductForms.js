@@ -180,8 +180,9 @@ class AddProductForms extends Component {
                 <CardHeader>
                   <strong>เพิ่มสินค้า</strong>
                 </CardHeader>
+
                 <CardBody>
-                  <Form type="submit">
+                  <Form className="form-horizontal">
                     <FormGroup row>
                       <Col md="3">
                         <Label htmlFor="text-input">ชื่อสินค้า</Label>

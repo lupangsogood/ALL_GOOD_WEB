@@ -13,7 +13,8 @@ import {
   Button,
   Input
 } from "reactstrap";
-
+import { connect } from "react-redux";
+import Action from "../../Action/action";
 const imageUrl =
   "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350";
 
@@ -51,6 +52,9 @@ const element = [
 ];
 
 class OrderProductForms extends Component {
+  async componentWillMount() {
+    await this.props.fetchOrder();
+  }
   cancleOrder = ordersId => {
     console.log(ordersId);
   };
@@ -96,6 +100,7 @@ class OrderProductForms extends Component {
 
   render() {
     let tableTest = this.setTableData();
+    console.log("init OrderForm");
     return (
       <div className="animated fadeIn">
         <Row>
@@ -166,4 +171,13 @@ class OrderProductForms extends Component {
   }
 }
 
-export default OrderProductForms;
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({
+  fetchOrder: () => dispatch(Action.fetchOrder())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OrderProductForms);
