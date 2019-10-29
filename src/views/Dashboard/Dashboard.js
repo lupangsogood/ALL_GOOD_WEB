@@ -15,6 +15,10 @@ import {
   ModalBody,
   ModalFooter
 } from "reactstrap";
+import {
+  NotificationContainer,
+  NotificationManager
+} from "react-notifications";
 import Action from "../../Action/action";
 import { connect } from "react-redux";
 // import { getStyle, hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
@@ -51,6 +55,7 @@ class Dashboard extends Component {
       dropdownOpen: false,
       radioSelected: 2,
       modal: false,
+      resultTask: "",
       product: {
         product_id: "",
         product_name: ""
@@ -58,13 +63,10 @@ class Dashboard extends Component {
     };
   }
 
-  toggle = (product_id, product_name) => {
+  toggle = productData => {
     this.setState({
       modal: !this.state.modal,
-      product: {
-        product_id: product_id,
-        product_name: product_name
-      }
+      product: productData
     });
   };
 
@@ -78,22 +80,68 @@ class Dashboard extends Component {
     // let productData = nextProps.ProductReducer;
     // console.log(productData);
     // this.settingTable(productData);
+    // console.log(this.state);
   }
 
   componentDidUpdate(prevProps) {
-    // console.log(this.props.productDataFetch);
-    // let productData = this.props.productDataFetch.product;
-    // console.log(productData);
-    // console.log(prevProps);
-    // const { store } = returnStoreAndPersistor();
-    // console.log(store.getState());
+    // console.log(this.props.resultTask);
   }
 
-  deleteProduct = () => {
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+
+    let loading = this.state.loading;
+    let result = nextProps.resultTask.result;
+    console.log(nextProps.resultTask);
+
     this.setState({
-      modal: !this.state.modal
+      resultTask: result
     });
-    // this.props.history.push("/products/lists");
+
+    if (this.state.resultTask === "SUCCESS") {
+      this.props.history.push("/list");
+
+      this.setState({
+        resultTask: "FAILURE"
+      });
+    } else {
+      if (nextProps.resultTask.loading !== loading) {
+      } else {
+        console.log("FAILURE");
+        this.setState({
+          loading: false
+        });
+        this.createNotification("error");
+      }
+    }
+  }
+
+  createNotification = type => {
+    switch (type) {
+      case "info":
+        NotificationManager.info("Info message");
+        break;
+      case "success":
+        NotificationManager.success("Success message", "Title here");
+        break;
+      case "warning":
+        NotificationManager.warning(
+          "Warning message",
+          "Close after 3000ms",
+          3000
+        );
+        break;
+      case "error":
+        NotificationManager.error(
+          "กรุณาตรวจสอบข้อมูลสินค้า",
+          "เกิดข้อผิดพลาด",
+          5000,
+          () => {}
+        );
+        break;
+      default:
+        break;
+    }
   };
 
   onRadioBtnClick(radioSelected) {
@@ -116,21 +164,30 @@ class Dashboard extends Component {
     // this.props.history.push("/products/edit", { product_id: "1" });
   };
 
+  deleteProductBtn = () => {
+    console.log("DELETE PRODUCT");
+    let productData = this.state.product;
+    // let dumpData = productData.body.data.product;
+
+    this.props.deleteProduct(productData);
+  };
+
   ModalDelete = () => {
-    let product_id = this.state.product.product_id;
-    let product_name = this.state.product.product_name;
+    let productData = this.state.product;
+    // console.log(productData);
     return (
       <div>
+        <NotificationContainer />
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>ลบสินค้า</ModalHeader>
+          <ModalHeader>ลบสินค้า</ModalHeader>
           <ModalBody>
             ท่านต้องการจะลบ
-            <strong> {product_name || ""} </strong> ใช่หรือไม่
+            <strong> {productData.product_name || ""} </strong> ใช่หรือไม่
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={this.deleteProduct}>
+            <Button color="primary" onClick={this.deleteProductBtn}>
               Delete
-            </Button>{" "}
+            </Button>
             <Button color="danger" onClick={this.toggle}>
               Cancel
             </Button>
@@ -176,10 +233,7 @@ class Dashboard extends Component {
           </td>
           <td className="text-center">
             <ButtonGroup>
-              <Button
-                color="danger"
-                onClick={() => this.toggle(data.product_id, data.product_name)}
-              >
+              <Button color="danger" onClick={() => this.toggle(data)}>
                 <i className="icon-trash"></i>
               </Button>
             </ButtonGroup>
@@ -234,12 +288,16 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = state => ({
+  resultTask: state.ProductReducer,
   productDataFetch: state.FetchProductReducer
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchProductData: () => {
     dispatch(Action.fetchProduct());
+  },
+  deleteProduct: product => {
+    dispatch(Action.deleteProduct(product));
   }
 });
 
