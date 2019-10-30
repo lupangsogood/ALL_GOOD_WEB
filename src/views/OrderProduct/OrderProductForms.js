@@ -57,7 +57,9 @@ class OrderProductForms extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editOrder: ""
+      editOrder: "",
+      loading: false,
+      resultTask: ""
     };
   }
 
@@ -69,11 +71,44 @@ class OrderProductForms extends Component {
     });
   }
 
-  componentDidMount() {
-    // console.log(this.props.orderDataFetch);
-  }
+  // async componentDidMount() {
+  //   await this.props.fetchOrder();
 
-  componentWillReceiveProps(nextProps) {}
+  //   this.setState({
+  //     editOrder: this.props.orderDataFetch
+  //   });
+  // }
+
+  componentWillReceiveProps(nextProps) {
+    let loading = this.state.loading;
+    let result = nextProps.resultTaskOrder.body;
+    console.log(result);
+    this.setState({
+      resultTask: result,
+      loading: nextProps.resultTaskOrder.loading
+    });
+    if (this.state.resultTask === "SUCCESS") {
+      console.log("TEST Receive Props");
+
+      this.props.fetchOrder();
+
+      // this.setState({
+      //   editOrder: this.props.orderDataFetch
+      // });
+      this.setState({
+        resultTask: "FAILURE"
+      });
+    } else {
+      if (this.props.resultTaskOrder.loading !== loading) {
+      } else {
+        console.log("FAILURE");
+        this.setState({
+          loading: false
+        });
+        // this.createNotification("error");
+      }
+    }
+  }
 
   cancleOrder = ordersId => {
     console.log(ordersId);
@@ -140,7 +175,7 @@ class OrderProductForms extends Component {
   };
 
   setTableData = order => {
-    // console.log(order);
+    console.log(order);
     let orderData = order.order;
     // console.log(this.state.editOrder);
     return orderData.map(element => {
@@ -266,13 +301,15 @@ class OrderProductForms extends Component {
 }
 
 const mapStateToProps = state => ({
-  orderDataFetch: state.FetchOrderReducer.body.data
+  orderDataFetch: state.FetchOrderReducer.body.data,
+  resultTaskOrder: state.EditOrderReducer
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchOrder: () => {
     dispatch(Action.fetchOrder());
   },
+
   updateOrderData: orderData => {
     dispatch(Action.updateTrackCode(orderData));
   }

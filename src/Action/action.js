@@ -6,6 +6,9 @@ import FormData from "form-data";
 const ALL_GOOD_BROWNIE_API =
   "http://ec2-3-0-89-4.ap-southeast-1.compute.amazonaws.com/api/";
 const config = { headers: { "Content-Type": "multipart/form-data" } };
+const configUrlEncoded = {
+  headers: { "Content-Type": "application/x-www-form-urlencoded" }
+};
 
 const Types = {
   USER_LOGIN: "USER_LOGIN",
@@ -285,7 +288,7 @@ export function fetchOrder() {
 export function updateTrackCode(orderData) {
   console.log(orderData);
   return dispatch => {
-    let formData = new FormData();
+    let formData = new URLSearchParams();
     let order = orderData.editOrder.order[0];
     let ems_barcode;
     try {
@@ -299,14 +302,15 @@ export function updateTrackCode(orderData) {
       formData.append(API_VARIABLE.order_transfer, 0);
       formData.append(API_VARIABLE.ems_barcode, ems_barcode);
 
+      for (var test of formData.entries()) {
+        console.log(test[0] + " " + test[1]);
+      }
       Axios.post(
         ALL_GOOD_BROWNIE_API + "order/status/" + order.order_id,
         formData,
-        config
+        configUrlEncoded
       )
-
         .then(response => {
-          console.log(response);
           switch (response.data.head.statusCode) {
             case 200:
               dispatch({
@@ -322,9 +326,6 @@ export function updateTrackCode(orderData) {
           }
         })
         .catch(error => {
-          for (var test of formData.entries()) {
-            console.log(test[0] + " " + test[1]);
-          }
           console.log(error.message);
 
           console.log(config);
