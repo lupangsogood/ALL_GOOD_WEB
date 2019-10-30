@@ -3,31 +3,20 @@ import ActionRedux from "../Action/action";
 
 const initialState = {
   head: "",
-  body: {
-    data: {
-      data: {
-        order: [
-          {
-            product: []
-          }
-        ]
-      }
+  body: [
+    {
+      product: []
     }
-  },
+  ],
+
   message: ""
 };
-
-// const appReducerState = {};
-
-// const appReducer = combineReducers({
-//   loggedOut: (loggedOut = "true") => loggedOut
-// });
 
 const FetchOrderReducer = (state = initialState, action) => {
   // console.log(action.type);
   switch (action.type) {
     case ActionRedux.Types.FETCH_ORDER_SUCCESS:
-      console.log(action.data);
+      // console.log(action.data);
       state = [];
       state = {
         head: "200",
@@ -36,7 +25,8 @@ const FetchOrderReducer = (state = initialState, action) => {
       };
       return state;
 
-    case ActionRedux.Types.FETCH_DATA_FAILURE:
+    case ActionRedux.Types.FETCH_ORDER_FAILURE:
+      state = [];
       state = {
         head: "200",
         body: action.data,

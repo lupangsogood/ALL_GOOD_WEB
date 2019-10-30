@@ -22,7 +22,9 @@ const Types = {
   DELETE_PRODUCT_SUCCESS: "DELETE_PRODUCT_SUCCESS",
   DELETE_PRODUCT_FAILURE: "DELETE_PRODUCT_FAILURE",
   FETCH_ORDER_SUCCESS: "FETCH_ORDER_SUCCESS",
-  FETCH_ORDER_FAILURE: "FETCH_ORDER_FAILURE"
+  FETCH_ORDER_FAILURE: "FETCH_ORDER_FAILURE",
+  EDIT_ORDER_SUCCESS: "EDIT_ORDER_SUCCESS",
+  EDIT_ORDER_FAILURE: "EDIT_ORDER_FAILURE"
 };
 
 const API_VARIABLE = {
@@ -35,7 +37,10 @@ const API_VARIABLE = {
   product_image_url: "product_img_url",
   product_quantity: "product_quantity",
   product_price: "product_price",
-  is_active: "is_active"
+  is_active: "is_active",
+  order_sts_id: "order_sts_id",
+  order_transfer: "order_transfer",
+  ems_barcode: "ems_barcode"
 };
 
 export function testFetchData() {
@@ -156,9 +161,9 @@ export function editProduct(product) {
         formData.append(API_VARIABLE.product_image_url, "");
       }
 
-      // for (var test of formData.entries()) {
-      //   console.log(test[0] + " " + test[1]);
-      // }
+      for (var test of formData.entries()) {
+        console.log(test[0] + " " + test[1]);
+      }
       Axios.post(
         ALL_GOOD_BROWNIE_API + "product/" + product.product_id,
         formData,
@@ -252,12 +257,84 @@ export function deleteProduct(product) {
 
 export function fetchOrder() {
   return dispatch => {
-    Axios.get(ALL_GOOD_BROWNIE_API + "order").then(response => {
-      dispatch({
-        type: Types.FETCH_ORDER_SUCCESS,
-        data: response.data.body.data.order
-      });
-    });
+    try {
+      Axios.get(ALL_GOOD_BROWNIE_API + "order")
+        .then(response => {
+          dispatch({
+            type: Types.FETCH_ORDER_SUCCESS,
+            data: response.data.body
+          });
+        })
+        .catch(error => {
+          console.log(error.message);
+          dispatch({
+            type: Types.FETCH_ORDER_FAILURE,
+            data: "FAILURE"
+          });
+        });
+    } catch (error) {
+      console.log(error.message);
+
+      dispatch({ type: Types.FETCH_DATA_FAILURE, data: "FAILURE" });
+    }
+  };
+}
+
+//----------------------------------------------------------------------
+
+export function updateTrackCode(orderData) {
+  console.log(orderData);
+  return dispatch => {
+    let formData = new FormData();
+    let order = orderData.editOrder.order[0];
+    let ems_barcode;
+    try {
+      if (typeof orderData.editOrder.ems_barcode === "undefined") {
+        ems_barcode = order.ems_barcode;
+      } else {
+        ems_barcode = orderData.editOrder.ems_barcode;
+      }
+
+      formData.append(API_VARIABLE.order_sts_id, 2);
+      formData.append(API_VARIABLE.order_transfer, 0);
+      formData.append(API_VARIABLE.ems_barcode, ems_barcode);
+
+      Axios.post(
+        ALL_GOOD_BROWNIE_API + "order/status/" + order.order_id,
+        formData,
+        config
+      )
+
+        .then(response => {
+          console.log(response);
+          switch (response.data.head.statusCode) {
+            case 200:
+              dispatch({
+                type: Types.EDIT_ORDER_SUCCESS,
+                data: "SUCCESS",
+                response: response.body
+              });
+              break;
+
+            default:
+              dispatch({ type: Types.EDIT_ORDER_FAILURE, data: "FAILURE" });
+              break;
+          }
+        })
+        .catch(error => {
+          for (var test of formData.entries()) {
+            console.log(test[0] + " " + test[1]);
+          }
+          console.log(error.message);
+
+          console.log(config);
+          dispatch({ type: Types.EDIT_ORDER_FAILURE, data: "FAILURE" });
+        });
+    } catch (error) {
+      console.log(error.message);
+
+      dispatch({ type: Types.EDIT_ORDER_FAILURE, data: "FAILURE" });
+    }
   };
 }
 
@@ -270,5 +347,6 @@ export default {
   fetchProduct,
   fetchOrder,
   deleteProduct,
-  editProduct
+  editProduct,
+  updateTrackCode
 };

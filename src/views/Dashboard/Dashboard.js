@@ -111,7 +111,7 @@ class Dashboard extends Component {
         this.setState({
           loading: false
         });
-        this.createNotification("error");
+        // this.createNotification("error");
       }
     }
   }

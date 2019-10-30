@@ -15,36 +15,38 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import Action from "../../Action/action";
+import { elementType } from "prop-types";
+import { text } from "body-parser";
 const imageUrl =
   "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350";
 
 const element = [
   {
-    order_id: 1,
+    order_transfer: 1,
     order_date: "22/10/2019",
     order_detail: "",
-    order_amount: "5,500",
-    order_slip: imageUrl,
+    order_total_price: "5,500",
+    order_img_url: imageUrl,
     order_tracking: "",
     order_status: "",
     order_action: ""
   },
   {
-    order_id: 2,
+    order_transfer: 2,
     order_date: "22/10/2019",
     order_detail: "",
-    order_amount: "3,025",
-    order_slip: imageUrl,
+    order_total_price: "3,025",
+    order_img_url: imageUrl,
     order_tracking: "",
     order_status: "",
     order_action: ""
   },
   {
-    order_id: 3,
+    order_transfer: 3,
     order_date: "22/10/2019",
     order_detail: "",
-    order_amount: "1,500",
-    order_slip: imageUrl,
+    order_total_price: "1,500",
+    order_img_url: imageUrl,
     order_tracking: "",
     order_status: "",
     order_action: ""
@@ -52,15 +54,97 @@ const element = [
 ];
 
 class OrderProductForms extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      editOrder: ""
+    };
+  }
+
   async componentWillMount() {
     await this.props.fetchOrder();
+
+    this.setState({
+      editOrder: this.props.orderDataFetch
+    });
   }
+
+  componentDidMount() {
+    // console.log(this.props.orderDataFetch);
+  }
+
+  componentWillReceiveProps(nextProps) {}
+
   cancleOrder = ordersId => {
     console.log(ordersId);
   };
 
-  setTableData = () => {
-    return element.map(element => {
+  setBadge = order_sts_id => {
+    let orderStatus = {
+      color: "",
+      text: ""
+    };
+
+    switch (order_sts_id) {
+      case "2":
+        orderStatus = {
+          color: "primary",
+          text: "รอชำระเงิน"
+        };
+        return orderStatus;
+
+      case "3":
+        orderStatus = {
+          color: "warning",
+          text: "รอตรวจสอบ"
+        };
+        return orderStatus;
+      case "4":
+        orderStatus = {
+          color: "info",
+          text: "รอขนส่ง"
+        };
+        return orderStatus;
+      case "5":
+        orderStatus = {
+          color: "success",
+          text: "สำเร็จ"
+        };
+        return orderStatus;
+
+      case "6":
+        orderStatus = {
+          color: "danger",
+          text: "ยกเลิก"
+        };
+        return orderStatus;
+      default:
+        break;
+    }
+  };
+
+  updateTrackingCode = trackingCode => {
+    let name = trackingCode.target.name;
+    let value = trackingCode.target.value;
+    this.setState({
+      editOrder: {
+        ...this.state.editOrder,
+        [name]: value
+      }
+    });
+  };
+
+  editOrderData = () => {
+    // console.log(this.state);
+    this.props.updateOrderData(this.state);
+  };
+
+  setTableData = order => {
+    // console.log(order);
+    let orderData = order.order;
+    // console.log(this.state.editOrder);
+    return orderData.map(element => {
+      let orderStatus = this.setBadge(element.order_sts_id);
       return (
         <tr key={element.order_id}>
           <td align="center">{element.order_id}</td>
@@ -70,25 +154,37 @@ class OrderProductForms extends Component {
               <i className="cui-monitor"></i>
             </Button>
           </td>
-          <td align="center">{element.order_amount}</td>
+          <td align="center">{element.order_total_price}</td>
           <td align="center">
             <img
-              src={element.order_slip}
+              src={element.order_img_url}
               alt="รูปสลิปสั่งซื้อ"
               width="100"
               height="100"
             />
           </td>
           <td align="center">
-            <Input>waiting</Input>
+            <Input
+              name="ems_barcode"
+              defaultValue={element.ems_barcode}
+              onChange={e => this.updateTrackingCode(e)}
+            />
+            <Button
+              color="success"
+              style={{ marginTop: "3px" }}
+              onClick={() => this.editOrderData()}
+            >
+              <i className="cui-task" style={{ marginRight: "3px" }}></i>
+              Update Tracking Code
+            </Button>
           </td>
           <td align="center">
-            <Badge color="warning">waiting</Badge>
+            <Badge color={orderStatus.color}>{orderStatus.text}</Badge>
           </td>
           <td align="center">
             <Button
               color="danger"
-              onClick={() => this.cancleOrder(element.key)}
+              onClick={() => this.cancleOrder(element.order_id)}
             >
               Cancle Order
             </Button>
@@ -99,19 +195,17 @@ class OrderProductForms extends Component {
   };
 
   render() {
-    let tableTest = this.setTableData();
     console.log("init OrderForm");
     return (
       <div className="animated fadeIn">
         <Row>
           <Col className="justify-content-end" align="right" xs="12" xl="12">
-            <Button color="warning" style={{ marginRight: "10px" }}>
+            <Button
+              color="warning"
+              style={{ marginRight: "10px", marginBottom: "10px" }}
+            >
               <i className="cui-cloud-download"></i>
               RELOAD
-            </Button>
-            <Button color="success">
-              <i className="cui-task"></i>
-              CONFIRM SHIPMENT
             </Button>
           </Col>
         </Row>
@@ -136,7 +230,7 @@ class OrderProductForms extends Component {
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody>{tableTest}</tbody>
+                  <tbody>{this.setTableData(this.props.orderDataFetch)}</tbody>
                 </Table>
                 <Pagination>
                   <PaginationItem disabled>
@@ -171,10 +265,17 @@ class OrderProductForms extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  orderDataFetch: state.FetchOrderReducer.body.data
+});
 
 const mapDispatchToProps = dispatch => ({
-  fetchOrder: () => dispatch(Action.fetchOrder())
+  fetchOrder: () => {
+    dispatch(Action.fetchOrder());
+  },
+  updateOrderData: orderData => {
+    dispatch(Action.updateTrackCode(orderData));
+  }
 });
 
 export default connect(
