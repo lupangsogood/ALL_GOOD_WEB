@@ -21,6 +21,7 @@ const routes = [
   { path: "/products/edit", name: "EditProduct", component: EditProduct },
 
   { path: "/order/list", name: "OrderProduct", component: OrderProduct },
+  { path: "/order/detal/list", name: "OrderDetail;", component: {} },
   { path: "/order/track", name: "OderTrack", component: ShipmentProducts }
 ];
 

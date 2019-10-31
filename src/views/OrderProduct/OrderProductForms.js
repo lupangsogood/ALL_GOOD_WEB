@@ -11,7 +11,11 @@ import {
   Row,
   Table,
   Button,
-  Input
+  Input,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
 } from "reactstrap";
 import { connect } from "react-redux";
 import Action from "../../Action/action";
@@ -58,8 +62,12 @@ class OrderProductForms extends Component {
     super(props);
     this.state = {
       editOrder: "",
+      modal: false,
       loading: false,
-      resultTask: ""
+      resultTask: "",
+      calcelOrderData: {
+        order_id: ""
+      }
     };
   }
 
@@ -91,10 +99,6 @@ class OrderProductForms extends Component {
       console.log("TEST Receive Props");
 
       this.props.fetchOrder();
-
-      // this.setState({
-      //   editOrder: this.props.orderDataFetch
-      // });
       this.setState({
         resultTask: "FAILURE"
       });
@@ -109,10 +113,6 @@ class OrderProductForms extends Component {
       }
     }
   }
-
-  cancleOrder = ordersId => {
-    console.log(ordersId);
-  };
 
   setBadge = order_sts_id => {
     let orderStatus = {
@@ -147,15 +147,22 @@ class OrderProductForms extends Component {
         };
         return orderStatus;
 
-      case "6":
+      case "7":
         orderStatus = {
-          color: "danger",
-          text: "ยกเลิก"
+          color: "dark",
+          text: "ยกเลิกรายการแล้ว"
         };
         return orderStatus;
       default:
         break;
     }
+  };
+
+  toggle = orderData => {
+    this.setState({
+      modal: !this.state.modal,
+      calcelOrderData: orderData
+    });
   };
 
   updateTrackingCode = trackingCode => {
@@ -177,9 +184,17 @@ class OrderProductForms extends Component {
   setTableData = order => {
     console.log(order);
     let orderData = order.order;
-    // console.log(this.state.editOrder);
-    return orderData.map(element => {
+
+    return orderData.map((element, index) => {
       let orderStatus = this.setBadge(element.order_sts_id);
+      let disable = false;
+
+      if (element.order_sts_id === "7") {
+        disable = true;
+        console.log(disable);
+      } else {
+        disable = false;
+      }
       return (
         <tr key={element.order_id}>
           <td align="center">{element.order_id}</td>
@@ -200,11 +215,13 @@ class OrderProductForms extends Component {
           </td>
           <td align="center">
             <Input
+              disabled={disable}
               name="ems_barcode"
               defaultValue={element.ems_barcode}
               onChange={e => this.updateTrackingCode(e)}
             />
             <Button
+              disabled={disable}
               color="success"
               style={{ marginTop: "3px" }}
               onClick={() => this.editOrderData()}
@@ -214,12 +231,15 @@ class OrderProductForms extends Component {
             </Button>
           </td>
           <td align="center">
-            <Badge color={orderStatus.color}>{orderStatus.text}</Badge>
+            <h4>
+              <Badge color={orderStatus.color}>{orderStatus.text}</Badge>
+            </h4>
           </td>
           <td align="center">
             <Button
+              disabled={disable}
               color="danger"
-              onClick={() => this.cancleOrder(element.order_id)}
+              onClick={() => this.toggle(element)}
             >
               Cancle Order
             </Button>
@@ -227,6 +247,32 @@ class OrderProductForms extends Component {
         </tr>
       );
     });
+  };
+
+  cancleOrder = () => {};
+
+  ModalDelete = () => {
+    let order = this.state.calcelOrderData;
+    console.log(order);
+    return (
+      <div>
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+          <ModalHeader>ยกเลิกรายการ</ModalHeader>
+          <ModalBody>
+            ท่านต้องการจะยกเลิกรายการสั่งซื้อที่
+            <strong> {order.order_id || ""} </strong> ใช่หรือไม่
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.cancleOrder()}>
+              Cancel Order
+            </Button>
+            <Button color="danger" onClick={this.toggle()}>
+              Nope
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
   };
 
   render() {
@@ -293,6 +339,7 @@ class OrderProductForms extends Component {
                 </Pagination>
               </CardBody>
             </Card>
+            {this.ModalDelete()}
           </Col>
         </Row>
       </div>

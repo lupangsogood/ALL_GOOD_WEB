@@ -99,9 +99,9 @@ class Dashboard extends Component {
     });
 
     if (this.state.resultTask === "SUCCESS") {
-      this.props.history.push("/list");
-
+      this.props.fetchProductData();
       this.setState({
+        modal: !this.state.modal,
         resultTask: "FAILURE"
       });
     } else {
