@@ -339,6 +339,60 @@ export function updateTrackCode(orderData) {
   };
 }
 
+export function cancelOrder(orderData) {
+  console.log(orderData);
+  return dispatch => {
+    let formData = new URLSearchParams();
+    let order = orderData;
+    let ems_barcode;
+    try {
+      if (typeof orderData.ems_barcode === "undefined") {
+        ems_barcode = order.ems_barcode;
+      } else {
+        ems_barcode = orderData.ems_barcode;
+      }
+
+      formData.append(API_VARIABLE.order_sts_id, 7);
+      formData.append(API_VARIABLE.order_transfer, 0);
+      formData.append(API_VARIABLE.ems_barcode, ems_barcode);
+
+      for (var test of formData.entries()) {
+        console.log(test[0] + " " + test[1]);
+      }
+      Axios.post(
+        ALL_GOOD_BROWNIE_API + "order/status/" + order.order_id,
+        formData,
+        configUrlEncoded
+      )
+        .then(response => {
+          switch (response.data.head.statusCode) {
+            case 200:
+              dispatch({
+                type: Types.EDIT_ORDER_SUCCESS,
+                data: "SUCCESS",
+                response: response.body
+              });
+              break;
+
+            default:
+              dispatch({ type: Types.EDIT_ORDER_FAILURE, data: "FAILURE" });
+              break;
+          }
+        })
+        .catch(error => {
+          console.log(error.message);
+
+          console.log(config);
+          dispatch({ type: Types.EDIT_ORDER_FAILURE, data: "FAILURE" });
+        });
+    } catch (error) {
+      console.log(error.message);
+
+      dispatch({ type: Types.EDIT_ORDER_FAILURE, data: "FAILURE" });
+    }
+  };
+}
+
 export default {
   Types,
   testFetchData,
@@ -349,5 +403,6 @@ export default {
   fetchOrder,
   deleteProduct,
   editProduct,
-  updateTrackCode
+  updateTrackCode,
+  cancelOrder
 };

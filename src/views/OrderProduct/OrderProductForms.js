@@ -54,6 +54,16 @@ const element = [
     order_tracking: "",
     order_status: "",
     order_action: ""
+  },
+  {
+    order_transfer: 3,
+    order_date: "22/10/2019",
+    order_detail: "",
+    order_total_price: "1,500",
+    order_img_url: imageUrl,
+    order_tracking: "",
+    order_status: "",
+    order_action: ""
   }
 ];
 
@@ -63,11 +73,17 @@ class OrderProductForms extends Component {
     this.state = {
       editOrder: "",
       modal: false,
+      detailModal: false,
       loading: false,
       resultTask: "",
       calcelOrderData: {
         order_id: ""
-      }
+      },
+      detailOrder: [
+        {
+          product: {}
+        }
+      ]
     };
   }
 
@@ -90,16 +106,18 @@ class OrderProductForms extends Component {
   componentWillReceiveProps(nextProps) {
     let loading = this.state.loading;
     let result = nextProps.resultTaskOrder.body;
-    console.log(result);
+    // console.log(result);
     this.setState({
       resultTask: result,
       loading: nextProps.resultTaskOrder.loading
     });
+
     if (this.state.resultTask === "SUCCESS") {
-      console.log("TEST Receive Props");
+      // console.log("TEST Receive Props");
 
       this.props.fetchOrder();
       this.setState({
+        // modal: !this.state.modal,
         resultTask: "FAILURE"
       });
     } else {
@@ -165,6 +183,13 @@ class OrderProductForms extends Component {
     });
   };
 
+  toggleDetail = orderDetail => {
+    this.setState({
+      detailOrder: orderDetail,
+      detailModal: !this.state.detailModal
+    });
+  };
+
   updateTrackingCode = trackingCode => {
     let name = trackingCode.target.name;
     let value = trackingCode.target.value;
@@ -182,7 +207,7 @@ class OrderProductForms extends Component {
   };
 
   setTableData = order => {
-    console.log(order);
+    // console.log(order);
     let orderData = order.order;
 
     return orderData.map((element, index) => {
@@ -200,7 +225,10 @@ class OrderProductForms extends Component {
           <td align="center">{element.order_id}</td>
           <td align="center">2012/01/01</td>
           <td align="center">
-            <Button color="info">
+            <Button
+              color="info"
+              onClick={() => this.toggleDetail(element.product)}
+            >
               <i className="cui-monitor"></i>
             </Button>
           </td>
@@ -249,11 +277,83 @@ class OrderProductForms extends Component {
     });
   };
 
-  cancleOrder = () => {};
+  setTableDetail = orderDetail => {
+    let orderDetailData = orderDetail;
+    // console.log(orderDetailData);
+    return orderDetail.map((element, index) => {
+      let amount = element.price * element.quantity;
+      return (
+        <tr key={index}>
+          <td align="center">{element.product_id}</td>
+          <td align="center">{element.product_name}</td>
+          <td align="center">{element.product_desc}</td>
+          <td align="center">
+            <img
+              src={element.product_img_url}
+              alt="รูปสลิปสั่งซื้อ"
+              width="100"
+              height="100"
+            />
+          </td>
+          <td align="center">{element.price}</td>
+          <td align="center">{element.quantity}</td>
+          <td align="center">{amount}</td>
+        </tr>
+      );
+    });
+  };
 
+  modalDetail = () => {
+    let orderDetail = this.state.detailOrder;
+    // console.log(orderDetail);
+    return (
+      <div>
+        <Modal
+          style={{ maxWidth: "90%" }}
+          isOpen={this.state.detailModal}
+          toggle={this.toggleDetail}
+        >
+          <ModalHeader>รายละเอียดการสั่งซื้อ</ModalHeader>
+          <ModalBody>
+            <Table responsive striped>
+              <thead>
+                <tr align="center">
+                  <th>รหัสสินค้า</th>
+                  <th>ชื่อสินค้า</th>
+                  <th>รายละเอียดสินค้า</th>
+                  <th>รูปสินค้า</th>
+                  <th>ราคา</th>
+                  <th>จำนวน</th>
+                  <th>รวม</th>
+                </tr>
+              </thead>
+              <tbody>{this.setTableDetail(this.state.detailOrder)}</tbody>
+            </Table>
+          </ModalBody>
+          <ModalFooter>
+            {/* ไว้ใส่ราคารวม */}
+            <Button
+              color="danger"
+              onClick={() => this.toggleDetail(this.state.detailOrder)}
+            >
+              Close
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  };
+
+  cancleOrder = () => {
+    let orderData = this.state.calcelOrderData;
+    this.props.cancelOrderData(orderData);
+    this.setState({
+      modal: !this.state.modal
+    });
+  };
   ModalDelete = () => {
     let order = this.state.calcelOrderData;
-    console.log(order);
+    // console.log(order);
     return (
       <div>
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
@@ -263,10 +363,10 @@ class OrderProductForms extends Component {
             <strong> {order.order_id || ""} </strong> ใช่หรือไม่
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={this.cancleOrder()}>
+            <Button color="primary" onClick={() => this.cancleOrder()}>
               Cancel Order
             </Button>
-            <Button color="danger" onClick={this.toggle()}>
+            <Button color="danger" onClick={this.toggle}>
               Nope
             </Button>
           </ModalFooter>
@@ -281,13 +381,13 @@ class OrderProductForms extends Component {
       <div className="animated fadeIn">
         <Row>
           <Col className="justify-content-end" align="right" xs="12" xl="12">
-            <Button
+            {/* <Button
               color="warning"
               style={{ marginRight: "10px", marginBottom: "10px" }}
             >
               <i className="cui-cloud-download"></i>
               RELOAD
-            </Button>
+            </Button> */}
           </Col>
         </Row>
         <Row className="row justify-content-md-center ">
@@ -313,32 +413,9 @@ class OrderProductForms extends Component {
                   </thead>
                   <tbody>{this.setTableData(this.props.orderDataFetch)}</tbody>
                 </Table>
-                <Pagination>
-                  <PaginationItem disabled>
-                    <PaginationLink previous tag="button">
-                      Prev
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem active>
-                    <PaginationLink tag="button">1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink tag="button">4</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink next tag="button">
-                      Next
-                    </PaginationLink>
-                  </PaginationItem>
-                </Pagination>
               </CardBody>
             </Card>
+            {this.modalDetail()}
             {this.ModalDelete()}
           </Col>
         </Row>
@@ -359,6 +436,9 @@ const mapDispatchToProps = dispatch => ({
 
   updateOrderData: orderData => {
     dispatch(Action.updateTrackCode(orderData));
+  },
+  cancelOrderData: orderData => {
+    dispatch(Action.cancelOrder(orderData));
   }
 });
 

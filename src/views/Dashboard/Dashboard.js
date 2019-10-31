@@ -101,7 +101,7 @@ class Dashboard extends Component {
     if (this.state.resultTask === "SUCCESS") {
       this.props.fetchProductData();
       this.setState({
-        modal: !this.state.modal,
+        // modal: !this.state.modal,
         resultTask: "FAILURE"
       });
     } else {
@@ -168,8 +168,11 @@ class Dashboard extends Component {
     console.log("DELETE PRODUCT");
     let productData = this.state.product;
     // let dumpData = productData.body.data.product;
-
     this.props.deleteProduct(productData);
+
+    this.setState({
+      modal: !this.state.modal
+    });
   };
 
   ModalDelete = () => {

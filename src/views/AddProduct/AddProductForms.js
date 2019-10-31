@@ -119,9 +119,11 @@ class AddProductForms extends Component {
     let loading = this.state.loading;
     let result = nextProps.resultTask.result;
     console.log(nextProps.resultTask);
-
-    if (result === "SUCCESS") {
-      this.props.history.push("/list");
+    console.log(this.props);
+    console.log(this.props.history.location.pathname);
+    let checkLocation = this.props.history.location.pathname;
+    if (result === "SUCCESS" && loading === true) {
+      this.props.history.push("/products/list");
       // window.location.replace("/list");
     } else {
       if (nextProps.resultTask.loading !== loading) {

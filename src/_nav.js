@@ -2,7 +2,6 @@ export default {
   items: [
     {
       name: "MENU",
-      url: "/products/list",
       icon: "icon-menu  ",
       badge: {
         variant: "info",
