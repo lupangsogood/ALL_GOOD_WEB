@@ -162,7 +162,6 @@ class AddProductForms extends Component {
     // }
   }
 
-  onReset = () => {};
   render() {
     return (
       <LoadingScreen
@@ -288,15 +287,15 @@ class AddProductForms extends Component {
                     onClick={this.onSubmit}
                   >
                     <i className="fa fa-dot-circle-o"></i> Submit
-                  </Button>
-                  <Button
+                  </Button>{" "}
+                  {/* <Button
                     type="reset"
                     size="sm"
                     color="danger"
                     onClick={this.onReset}
                   >
                     <i className="fa fa-ban"></i> Reset
-                  </Button>
+                  </Button> */}
                 </CardFooter>
               </Card>
             </Col>

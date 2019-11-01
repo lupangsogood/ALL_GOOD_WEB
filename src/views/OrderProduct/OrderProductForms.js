@@ -21,6 +21,7 @@ import { connect } from "react-redux";
 import Action from "../../Action/action";
 import { elementType } from "prop-types";
 import { text } from "body-parser";
+import waitingImageUrl from "../../assets/img/waiting.png";
 const imageUrl =
   "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350";
 
@@ -76,6 +77,10 @@ class OrderProductForms extends Component {
       detailModal: false,
       loading: false,
       resultTask: "",
+      slipImageModal: {
+        imageUrl: "",
+        imageModal: false
+      },
       calcelOrderData: {
         order_id: ""
       },
@@ -190,6 +195,16 @@ class OrderProductForms extends Component {
     });
   };
 
+  toggleImage = imageUrl => {
+    // console.log(imageUrl);
+    this.setState({
+      slipImageModal: {
+        imageUrl: imageUrl,
+        imageModal: !this.state.slipImageModal.imageModal
+      }
+    });
+  };
+
   updateTrackingCode = trackingCode => {
     let name = trackingCode.target.name;
     let value = trackingCode.target.value;
@@ -199,11 +214,14 @@ class OrderProductForms extends Component {
         [name]: value
       }
     });
+
+    console.log(this.state.editOrder);
   };
 
-  editOrderData = () => {
-    // console.log(this.state);
-    this.props.updateOrderData(this.state);
+  editOrderData = order_id => {
+    console.log(order_id);
+    console.log(this.state.editOrder);
+    this.props.updateOrderData(this.state.editOrder.ems_barcode, order_id);
   };
 
   setTableData = order => {
@@ -213,12 +231,19 @@ class OrderProductForms extends Component {
     return orderData.map((element, index) => {
       let orderStatus = this.setBadge(element.order_sts_id);
       let disable = false;
+      let imageDisable = "false";
 
       if (element.order_sts_id === "7") {
         disable = true;
         console.log(disable);
       } else {
         disable = false;
+      }
+
+      if (typeof element.order_img_url === "undefined") {
+        imageDisable = "false";
+      } else {
+        imageDisable = "true";
       }
       return (
         <tr key={element.order_id}>
@@ -235,10 +260,14 @@ class OrderProductForms extends Component {
           <td align="center">{element.order_total_price}</td>
           <td align="center">
             <img
-              src={element.order_img_url}
+              src={
+                element.order_img_url ? element.order_img_url : waitingImageUrl
+              }
+              disable={imageDisable}
               alt="รูปสลิปสั่งซื้อ"
               width="100"
               height="100"
+              onClick={() => this.toggleImage(element.order_img_url)}
             />
           </td>
           <td align="center">
@@ -252,7 +281,7 @@ class OrderProductForms extends Component {
               disabled={disable}
               color="success"
               style={{ marginTop: "3px" }}
-              onClick={() => this.editOrderData()}
+              onClick={() => this.editOrderData(element.order_id)}
             >
               <i className="cui-task" style={{ marginRight: "3px" }}></i>
               Update Tracking Code
@@ -344,6 +373,34 @@ class OrderProductForms extends Component {
     );
   };
 
+  modalSlipImage = () => {
+    const slipImageUrl = this.state.slipImageModal.imageUrl;
+    // console.log(slipImageUrl);
+    // console.log(this.state.slipImageModal);
+    return (
+      <div>
+        <Modal
+          style={{ maxWidth: "60%" }}
+          isOpen={this.state.slipImageModal.imageModal}
+          toggle={this.toggleImage}
+        >
+          <ModalHeader>รูปภาพสลิปโอนเงิน</ModalHeader>
+          <ModalBody>
+            <div align="center">
+              <img src={slipImageUrl} />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            {/* ไว้ใส่ราคารวม */}
+            <Button color="danger" onClick={this.toggleImage}>
+              Close
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  };
+
   cancleOrder = () => {
     let orderData = this.state.calcelOrderData;
     this.props.cancelOrderData(orderData);
@@ -351,6 +408,7 @@ class OrderProductForms extends Component {
       modal: !this.state.modal
     });
   };
+
   ModalDelete = () => {
     let order = this.state.calcelOrderData;
     // console.log(order);
@@ -416,6 +474,7 @@ class OrderProductForms extends Component {
               </CardBody>
             </Card>
             {this.modalDetail()}
+            {this.modalSlipImage()}
             {this.ModalDelete()}
           </Col>
         </Row>
@@ -434,8 +493,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(Action.fetchOrder());
   },
 
-  updateOrderData: orderData => {
-    dispatch(Action.updateTrackCode(orderData));
+  updateOrderData: (orderData, order_id) => {
+    dispatch(Action.updateTrackCode(orderData, order_id));
   },
   cancelOrderData: orderData => {
     dispatch(Action.cancelOrder(orderData));

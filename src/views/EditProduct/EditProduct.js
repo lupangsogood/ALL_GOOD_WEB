@@ -197,6 +197,7 @@ class EditProduct extends Component {
                           name="price"
                           placeholder=""
                           type="number"
+                          disabled={true}
                           value={this.state.productData.product_price}
                           onChange={e => this.onHandleChange(e)}
                         />
@@ -210,7 +211,7 @@ class EditProduct extends Component {
                       <Col xs="12" md="9">
                         <Input
                           id="text-input"
-                          name="quantity"
+                          name="product_quantity"
                           placeholder="สูงสุด 100"
                           min={0}
                           max={100}
@@ -253,14 +254,14 @@ class EditProduct extends Component {
                   >
                     <i className="fa fa-dot-circle-o"></i> Submit
                   </Button>
-                  <Button
+                  {/* <Button
                     type="reset"
                     size="sm"
                     color="danger"
                     onClick={this.onReset}
                   >
                     <i className="fa fa-ban"></i> Reset
-                  </Button>
+                  </Button> */}
                 </CardFooter>
               </Card>
             </Col>

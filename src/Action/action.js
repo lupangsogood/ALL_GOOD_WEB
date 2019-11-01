@@ -285,20 +285,22 @@ export function fetchOrder() {
 
 //----------------------------------------------------------------------
 
-export function updateTrackCode(orderData) {
-  console.log(orderData);
+export function updateTrackCode(order_ems_barcode, order_id) {
+  console.log(order_ems_barcode);
+  console.log(order_id);
   return dispatch => {
     let formData = new URLSearchParams();
-    let order = orderData.editOrder.order[0];
+    // let order = orderData.editOrder.order[0];
+    // let order = orderData.editOrder.order[0];
     let ems_barcode;
     try {
-      if (typeof orderData.editOrder.ems_barcode === "undefined") {
-        ems_barcode = order.ems_barcode;
+      if (typeof order_ems_barcode === "undefined") {
+        ems_barcode = order_ems_barcode;
       } else {
-        ems_barcode = orderData.editOrder.ems_barcode;
+        ems_barcode = order_ems_barcode;
       }
 
-      formData.append(API_VARIABLE.order_sts_id, 2);
+      formData.append(API_VARIABLE.order_sts_id, 4);
       formData.append(API_VARIABLE.order_transfer, 0);
       formData.append(API_VARIABLE.ems_barcode, ems_barcode);
 
@@ -306,7 +308,7 @@ export function updateTrackCode(orderData) {
         console.log(test[0] + " " + test[1]);
       }
       Axios.post(
-        ALL_GOOD_BROWNIE_API + "order/status/" + order.order_id,
+        ALL_GOOD_BROWNIE_API + "order/status/" + order_id,
         formData,
         configUrlEncoded
       )
