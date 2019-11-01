@@ -17,14 +17,27 @@ const appReducer = combineReducers({
 const loginState = (state = initialState, action) => {
   switch (action.type) {
     case ActionRedux.Types.USER_LOGIN:
-      console.log("USER_LOGIN");
-      state = [];
-      state = {
-        loggedIn: true,
-        username: "test",
-        password: "test"
-      };
-      return state;
+      switch (action.data) {
+        case "SUCCESS":
+          console.log(action.response);
+          let userData = action.response;
+          state = [];
+          state = {
+            loggedIn: true,
+            username: userData.user_email,
+            token: userData.access_token
+          };
+          return state;
+
+        default:
+          state = {
+            loggedIn: false,
+            username: "",
+            token: ""
+          };
+
+          return state;
+      }
 
     case ActionRedux.Types.USER_LOGOUT:
       console.log("USER_LOGOUT");

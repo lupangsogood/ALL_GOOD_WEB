@@ -5,9 +5,15 @@ import FormData from "form-data";
 
 const ALL_GOOD_BROWNIE_API =
   "http://ec2-3-0-89-4.ap-southeast-1.compute.amazonaws.com/api/";
-const config = { headers: { "Content-Type": "multipart/form-data" } };
-const configUrlEncoded = {
-  headers: { "Content-Type": "application/x-www-form-urlencoded" }
+
+let config = {
+  headers: { "Content-Type": "multipart/form-data", bearer: "" }
+};
+let configUrlEncoded = {
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    bearer: ""
+  }
 };
 
 const Types = {
@@ -54,9 +60,36 @@ export function testFetchData() {
   };
 }
 
-export function login() {
+export function login(userLogin) {
+  console.log(userLogin);
+  let formData = new URLSearchParams();
   return dispatch => {
-    dispatch({ type: Types.USER_LOGIN, data: "USER_LOGIN" });
+    formData.append("user_email", userLogin.username);
+    formData.append("user_password", userLogin.password);
+
+    Axios.post(ALL_GOOD_BROWNIE_API + "user/login", formData, configUrlEncoded)
+      .then(response => {
+        console.log(response);
+        let user_token = response.data.body.data.user.access_token;
+        Object.assign(config.headers, {
+          ...config.headers,
+          bearer: user_token
+        });
+
+        Object.assign(configUrlEncoded.headers, {
+          ...config.headers,
+          bearer: user_token
+        });
+        dispatch({
+          type: Types.USER_LOGIN,
+          data: "SUCCESS",
+          response: response.data.body.data.user
+        });
+      })
+      .catch(error => {
+        console.log(error.message);
+        dispatch({ type: Types.USER_LOGIN, data: "FAILURE", response: "" });
+      });
   };
 }
 
@@ -75,7 +108,7 @@ export function fetchProduct() {
     Axios.get(ALL_GOOD_BROWNIE_API + "product").then(response => {
       switch (response.data.head.statusCode) {
         case 200:
-          console.log(response.data.body);
+          // console.log(response.data.body);
           dispatch({
             type: Types.FETCH_PRODUCT_SUCCESS,
             head: "SUCCESS",
@@ -111,7 +144,7 @@ export function addProduct(product) {
       formData.append(API_VARIABLE.product_price, product.product_price);
       Axios.post(ALL_GOOD_BROWNIE_API + "product", formData, config)
         .then(response => {
-          console.log(response);
+          // console.log(response);
           switch (response.data.head.statusCode) {
             case 200:
               dispatch({ type: Types.ADD_PRODUCT_SUCCESS, data: "SUCCESS" });
@@ -136,7 +169,7 @@ export function editProduct(product) {
   let formData = new FormData();
 
   return dispatch => {
-    console.log(product);
+    // console.log(product);
 
     try {
       formData.append(API_VARIABLE.product_name, product.product_name);
@@ -150,7 +183,7 @@ export function editProduct(product) {
       formData.append(API_VARIABLE.product_price, product.product_price);
 
       if (typeof product.product_image_file === `undefined`) {
-        console.log("CHECK");
+        // console.log("CHECK");
         formData.append(
           API_VARIABLE.product_image_url,
           product.product_img_url
@@ -164,9 +197,9 @@ export function editProduct(product) {
         formData.append(API_VARIABLE.product_image_url, "");
       }
 
-      for (var test of formData.entries()) {
-        console.log(test[0] + " " + test[1]);
-      }
+      // for (var test of formData.entries()) {
+      //   console.log(test[0] + " " + test[1]);
+      // }
       Axios.post(
         ALL_GOOD_BROWNIE_API + "product/" + product.product_id,
         formData,
@@ -174,7 +207,7 @@ export function editProduct(product) {
       )
 
         .then(response => {
-          console.log(response);
+          // console.log(response);
           switch (response.data.head.statusCode) {
             case 200:
               dispatch({
@@ -304,9 +337,9 @@ export function updateTrackCode(order_ems_barcode, order_id) {
       formData.append(API_VARIABLE.order_transfer, 0);
       formData.append(API_VARIABLE.ems_barcode, ems_barcode);
 
-      for (var test of formData.entries()) {
-        console.log(test[0] + " " + test[1]);
-      }
+      // for (var test of formData.entries()) {
+      //   console.log(test[0] + " " + test[1]);
+      // }
       Axios.post(
         ALL_GOOD_BROWNIE_API + "order/status/" + order_id,
         formData,

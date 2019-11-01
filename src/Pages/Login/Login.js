@@ -18,28 +18,44 @@ import {
 
 class Login extends Component {
   state = {
-    username: "",
-    password: ""
+    loginData: {
+      username: "",
+      password: ""
+    }
   };
 
   componentDidMount() {
     // this.props.testAPI();
-    console.log(this.props.testLogin);
+    // console.log(this.props.testLogin);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(this.props.loginResult);
+    console.log(nextProps);
+    let loginResult = nextProps.loginResult;
+
+    if (loginResult.loggedIn === false) {
+    } else {
+      this.props.history.push("/product/list");
+    }
   }
 
   loginBtn = () => {
     // console.log(this.state.username)
     // console.log(this.state.password)
-    this.props.login();
-    this.props.history.push("/dashboard");
+    this.props.login(this.state.loginData);
   };
 
   inputTxtLogin = e => {
     var name = e.target.name;
     var value = e.target.value;
     this.setState({
-      [name]: value
+      loginData: {
+        ...this.state.loginData,
+        [name]: value
+      }
     });
+    console.log(this.state.loginData);
   };
 
   render() {
@@ -65,7 +81,7 @@ class Login extends Component {
                           type="text"
                           placeholder="Username"
                           autoComplete="username"
-                          onChange={this.inputTxtLogin}
+                          onChange={e => this.inputTxtLogin(e)}
                         />
                       </InputGroup>
                       <InputGroup className="mb-4">
@@ -79,7 +95,7 @@ class Login extends Component {
                           type="password"
                           placeholder="Password"
                           autoComplete="current-password"
-                          onChange={this.inputTxtLogin}
+                          onChange={e => this.inputTxtLogin(e)}
                         />
                       </InputGroup>
                       <Row>
@@ -107,12 +123,12 @@ class Login extends Component {
 
 const mapStateToProps = state => ({
   testStateAPI: state.ProductReducer,
-  testLogin: state.UserReducer
+  loginResult: state.UserReducer
 });
 
 const mapDispatchToProps = dispatch => ({
   testAPI: () => dispatch(Action.testFetchData()),
-  login: () => dispatch(Action.login())
+  login: loginData => dispatch(Action.login(loginData))
 });
 
 export default connect(
