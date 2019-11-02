@@ -2,10 +2,6 @@
   "name": "all_good_brownie",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "11.5.0",
-    "npm": "6.4.1"
-  },
   "dependencies": {
     "@coreui/coreui": "^2.1.12",
     "@coreui/icons": "^0.3.0",
