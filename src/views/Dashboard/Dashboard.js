@@ -167,8 +167,10 @@ class Dashboard extends Component {
   deleteProductBtn = () => {
     console.log("DELETE PRODUCT");
     let productData = this.state.product;
+    let userData = this.props.userData;
     // let dumpData = productData.body.data.product;
-    this.props.deleteProduct(productData);
+    let accesToken = userData.token;
+    this.props.deleteProduct(productData, accesToken);
 
     this.setState({
       modal: !this.state.modal
@@ -292,15 +294,16 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => ({
   resultTask: state.ProductReducer,
-  productDataFetch: state.FetchProductReducer
+  productDataFetch: state.FetchProductReducer,
+  userData: state.UserReducer
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchProductData: () => {
     dispatch(Action.fetchProduct());
   },
-  deleteProduct: product => {
-    dispatch(Action.deleteProduct(product));
+  deleteProduct: (product, accesToken) => {
+    dispatch(Action.deleteProduct(product, accesToken));
   }
 });
 

@@ -3,12 +3,15 @@ import ActionRedux from "../Action/action";
 
 const initialState = {
   head: "",
-  body: [
-    {
-      product: []
+  body: {
+    data: {
+      order: [
+        {
+          product: []
+        }
+      ]
     }
-  ],
-
+  },
   message: ""
 };
 

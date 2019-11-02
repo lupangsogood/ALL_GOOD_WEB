@@ -112,7 +112,10 @@ class EditProduct extends Component {
     this.setState({
       loading: true
     });
-    this.props.editProduct(this.state.productData);
+    let userData = this.props.userData;
+    let accesToken = userData.token;
+
+    this.props.editProduct(this.state.productData, accesToken);
   };
 
   render() {
@@ -272,11 +275,13 @@ class EditProduct extends Component {
   }
 }
 const mapStateToProps = state => ({
-  resultTask: state.ProductReducer
+  resultTask: state.ProductReducer,
+  userData: state.UserReducer
 });
 
 const mapDispatchToProps = dispatch => ({
-  editProduct: product => dispatch(Action.editProduct(product))
+  editProduct: (product, accessToken) =>
+    dispatch(Action.editProduct(product, accessToken))
 });
 
 export default connect(

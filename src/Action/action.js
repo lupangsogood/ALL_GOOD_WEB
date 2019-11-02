@@ -2,6 +2,7 @@ import Axios from "axios";
 // import storage from "redux-persist/lib/storage";
 // import { func } from "prop-types";
 import FormData from "form-data";
+// import { object } from "prop-types";
 
 const ALL_GOOD_BROWNIE_API =
   "http://ec2-3-0-89-4.ap-southeast-1.compute.amazonaws.com/api/";
@@ -12,7 +13,7 @@ let config = {
 let configUrlEncoded = {
   headers: {
     "Content-Type": "application/x-www-form-urlencoded",
-    bearer: ""
+    Authorization: ""
   }
 };
 
@@ -70,16 +71,16 @@ export function login(userLogin) {
     Axios.post(ALL_GOOD_BROWNIE_API + "user/login", formData, configUrlEncoded)
       .then(response => {
         console.log(response);
-        let user_token = response.data.body.data.user.access_token;
-        Object.assign(config.headers, {
-          ...config.headers,
-          bearer: user_token
-        });
+        // let user_token = response.data.body.data.user.access_token;
+        // Object.assign(config.headers, {
+        //   ...config.headers,
+        //   bearer: user_token
+        // });
 
-        Object.assign(configUrlEncoded.headers, {
-          ...config.headers,
-          bearer: user_token
-        });
+        // Object.assign(configUrlEncoded.headers, {
+        //   ...config.headers,
+        //   bearer: user_token
+        // });
         dispatch({
           type: Types.USER_LOGIN,
           data: "SUCCESS",
@@ -126,7 +127,7 @@ export function fetchProduct() {
 
 //----------------------------------------------------------------
 
-export function addProduct(product) {
+export function addProduct(product, access_token) {
   let formData = new FormData();
   return dispatch => {
     try {
@@ -142,6 +143,12 @@ export function addProduct(product) {
       );
       formData.append(API_VARIABLE.product_quantity, product.quantity);
       formData.append(API_VARIABLE.product_price, product.product_price);
+
+      let user_token = access_token;
+      Object.assign(config.headers, {
+        ...config.headers,
+        Authorization: "bearer " + user_token
+      });
       Axios.post(ALL_GOOD_BROWNIE_API + "product", formData, config)
         .then(response => {
           // console.log(response);
@@ -165,7 +172,7 @@ export function addProduct(product) {
   };
 }
 
-export function editProduct(product) {
+export function editProduct(product, access_token) {
   let formData = new FormData();
 
   return dispatch => {
@@ -200,6 +207,12 @@ export function editProduct(product) {
       // for (var test of formData.entries()) {
       //   console.log(test[0] + " " + test[1]);
       // }
+
+      let user_token = access_token;
+      Object.assign(config.headers, {
+        ...config.headers,
+        Authorization: "bearer " + user_token
+      });
       Axios.post(
         ALL_GOOD_BROWNIE_API + "product/" + product.product_id,
         formData,
@@ -234,9 +247,8 @@ export function editProduct(product) {
   };
 }
 
-export function deleteProduct(product) {
+export function deleteProduct(product, access_token) {
   let formData = new FormData();
-
   return dispatch => {
     console.log(product);
 
@@ -255,6 +267,13 @@ export function deleteProduct(product) {
       // for (var test of formData.entries()) {
       //   console.log(test[0] + " " + test[1]);
       // }
+      let user_token = access_token;
+      Object.assign(config.headers, {
+        ...config.headers,
+        Authorization: "bearer " + user_token
+      });
+      // console.log(config);
+
       Axios.post(
         ALL_GOOD_BROWNIE_API + "product/" + product.product_id,
         formData,
@@ -391,9 +410,9 @@ export function cancelOrder(orderData) {
       formData.append(API_VARIABLE.order_transfer, 0);
       formData.append(API_VARIABLE.ems_barcode, ems_barcode);
 
-      for (var test of formData.entries()) {
-        console.log(test[0] + " " + test[1]);
-      }
+      // for (var test of formData.entries()) {
+      //   console.log(test[0] + " " + test[1]);
+      // }
       Axios.post(
         ALL_GOOD_BROWNIE_API + "order/status/" + order.order_id,
         formData,

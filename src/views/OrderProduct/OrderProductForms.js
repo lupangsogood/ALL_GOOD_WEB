@@ -5,9 +5,6 @@ import {
   CardBody,
   CardHeader,
   Col,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Row,
   Table,
   Button,
@@ -19,54 +16,53 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import Action from "../../Action/action";
-import { elementType } from "prop-types";
-import { text } from "body-parser";
-import waitingImageUrl from "../../assets/img/waiting.png";
-const imageUrl =
-  "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350";
 
-const element = [
-  {
-    order_transfer: 1,
-    order_date: "22/10/2019",
-    order_detail: "",
-    order_total_price: "5,500",
-    order_img_url: imageUrl,
-    order_tracking: "",
-    order_status: "",
-    order_action: ""
-  },
-  {
-    order_transfer: 2,
-    order_date: "22/10/2019",
-    order_detail: "",
-    order_total_price: "3,025",
-    order_img_url: imageUrl,
-    order_tracking: "",
-    order_status: "",
-    order_action: ""
-  },
-  {
-    order_transfer: 3,
-    order_date: "22/10/2019",
-    order_detail: "",
-    order_total_price: "1,500",
-    order_img_url: imageUrl,
-    order_tracking: "",
-    order_status: "",
-    order_action: ""
-  },
-  {
-    order_transfer: 3,
-    order_date: "22/10/2019",
-    order_detail: "",
-    order_total_price: "1,500",
-    order_img_url: imageUrl,
-    order_tracking: "",
-    order_status: "",
-    order_action: ""
-  }
-];
+import waitingImageUrl from "../../assets/img/waiting.png";
+// const imageUrl =
+//   "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350";
+
+// const element = [
+//   {
+//     order_transfer: 1,
+//     order_date: "22/10/2019",
+//     order_detail: "",
+//     order_total_price: "5,500",
+//     order_img_url: imageUrl,
+//     order_tracking: "",
+//     order_status: "",
+//     order_action: ""
+//   },
+//   {
+//     order_transfer: 2,
+//     order_date: "22/10/2019",
+//     order_detail: "",
+//     order_total_price: "3,025",
+//     order_img_url: imageUrl,
+//     order_tracking: "",
+//     order_status: "",
+//     order_action: ""
+//   },
+//   {
+//     order_transfer: 3,
+//     order_date: "22/10/2019",
+//     order_detail: "",
+//     order_total_price: "1,500",
+//     order_img_url: imageUrl,
+//     order_tracking: "",
+//     order_status: "",
+//     order_action: ""
+//   },
+//   {
+//     order_transfer: 3,
+//     order_date: "22/10/2019",
+//     order_detail: "",
+//     order_total_price: "1,500",
+//     order_img_url: imageUrl,
+//     order_tracking: "",
+//     order_status: "",
+//     order_action: ""
+//   }
+// ];
 
 class OrderProductForms extends Component {
   constructor(props) {
@@ -92,12 +88,8 @@ class OrderProductForms extends Component {
     };
   }
 
-  async componentWillMount() {
-    await this.props.fetchOrder();
-
-    this.setState({
-      editOrder: this.props.orderDataFetch
-    });
+  componentWillMount() {
+    this.props.fetchOrder();
   }
 
   // async componentDidMount() {
@@ -177,7 +169,7 @@ class OrderProductForms extends Component {
         };
         return orderStatus;
       default:
-        break;
+        return orderStatus;
     }
   };
 
@@ -225,7 +217,7 @@ class OrderProductForms extends Component {
   };
 
   setTableData = order => {
-    // console.log(order);
+    console.log(order);
     let orderData = order.order;
 
     return orderData.map((element, index) => {
@@ -246,7 +238,7 @@ class OrderProductForms extends Component {
         imageDisable = "true";
       }
       return (
-        <tr key={element.order_id}>
+        <tr key={index}>
           <td align="center">{element.order_id}</td>
           <td align="center">2012/01/01</td>
           <td align="center">
@@ -264,7 +256,7 @@ class OrderProductForms extends Component {
                 element.order_img_url ? element.order_img_url : waitingImageUrl
               }
               disable={imageDisable}
-              alt="รูปสลิปสั่งซื้อ"
+              alt="รูปสินค้า"
               width="100"
               height="100"
               onClick={() => this.toggleImage(element.order_img_url)}
@@ -307,7 +299,7 @@ class OrderProductForms extends Component {
   };
 
   setTableDetail = orderDetail => {
-    let orderDetailData = orderDetail;
+    // let orderDetailData = orderDetail;
     // console.log(orderDetailData);
     return orderDetail.map((element, index) => {
       let amount = element.price * element.quantity;
@@ -333,7 +325,7 @@ class OrderProductForms extends Component {
   };
 
   modalDetail = () => {
-    let orderDetail = this.state.detailOrder;
+    // let orderDetail = this.state.detailOrder;
     // console.log(orderDetail);
     return (
       <div>
@@ -387,7 +379,7 @@ class OrderProductForms extends Component {
           <ModalHeader>รูปภาพสลิปโอนเงิน</ModalHeader>
           <ModalBody>
             <div align="center">
-              <img src={slipImageUrl} />
+              <img src={slipImageUrl} alt="รูปสลิปการชำระเงิน" />
             </div>
           </ModalBody>
           <ModalFooter>

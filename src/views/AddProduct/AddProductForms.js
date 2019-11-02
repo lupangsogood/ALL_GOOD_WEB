@@ -110,7 +110,9 @@ class AddProductForms extends Component {
     this.setState({
       loading: true
     });
-    this.props.addProduct(this.state.addProductState);
+    let userData = this.props.userData;
+    let accesToken = userData.token;
+    this.props.addProduct(this.state.addProductState, accesToken);
   };
 
   componentWillReceiveProps(nextProps) {
@@ -121,7 +123,7 @@ class AddProductForms extends Component {
     console.log(nextProps.resultTask);
     console.log(this.props);
     console.log(this.props.history.location.pathname);
-    let checkLocation = this.props.history.location.pathname;
+    // let checkLocation = this.props.history.location.pathname;
     if (result === "SUCCESS" && loading === true) {
       this.props.history.push("/products/list");
       // window.location.replace("/list");
@@ -307,11 +309,13 @@ class AddProductForms extends Component {
 }
 
 const mapStateToProps = state => ({
-  resultTask: state.ProductReducer
+  resultTask: state.ProductReducer,
+  userData: state.UserReducer
 });
 
 const mapDispatchToProps = dispatch => ({
-  addProduct: product => dispatch(Action.addProduct(product))
+  addProduct: (product, accessToken) =>
+    dispatch(Action.addProduct(product, accessToken))
 });
 
 export default connect(
