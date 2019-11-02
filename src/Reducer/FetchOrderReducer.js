@@ -29,12 +29,11 @@ const FetchOrderReducer = (state = initialState, action) => {
       return state;
 
     case ActionRedux.Types.FETCH_ORDER_FAILURE:
-      state = [];
-      state = {
-        head: "200",
-        body: action.data,
-        message: "ดึงข้อมูลไม่สำเร็จ"
-      };
+      // state = {
+      //   head: "200",
+      //   body: action.data,
+      //   message: "ดึงข้อมูลไม่สำเร็จ"
+      // };
       return state;
 
     default:
