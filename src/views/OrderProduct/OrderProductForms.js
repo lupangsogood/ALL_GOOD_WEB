@@ -89,7 +89,9 @@ class OrderProductForms extends Component {
   }
 
   componentWillMount() {
-    this.props.fetchOrder();
+    let userData = this.props.userData;
+    let accesToken = userData.token;
+    this.props.fetchOrder(accesToken);
   }
 
   // async componentDidMount() {
@@ -213,7 +215,14 @@ class OrderProductForms extends Component {
   editOrderData = order_id => {
     console.log(order_id);
     console.log(this.state.editOrder);
-    this.props.updateOrderData(this.state.editOrder.ems_barcode, order_id);
+
+    let userData = this.props.userData;
+    let accesToken = userData.token;
+    this.props.updateOrderData(
+      this.state.editOrder.ems_barcode,
+      order_id,
+      accesToken
+    );
   };
 
   setTableData = order => {
@@ -395,7 +404,10 @@ class OrderProductForms extends Component {
 
   cancleOrder = () => {
     let orderData = this.state.calcelOrderData;
-    this.props.cancelOrderData(orderData);
+
+    let userData = this.props.userData;
+    let accesToken = userData.token;
+    this.props.cancelOrderData(orderData, accesToken);
     this.setState({
       modal: !this.state.modal
     });
@@ -477,19 +489,20 @@ class OrderProductForms extends Component {
 
 const mapStateToProps = state => ({
   orderDataFetch: state.FetchOrderReducer.body.data,
-  resultTaskOrder: state.EditOrderReducer
+  resultTaskOrder: state.EditOrderReducer,
+  userData: state.UserReducer
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchOrder: () => {
-    dispatch(Action.fetchOrder());
+  fetchOrder: access_token => {
+    dispatch(Action.fetchOrder(access_token));
   },
 
-  updateOrderData: (orderData, order_id) => {
-    dispatch(Action.updateTrackCode(orderData, order_id));
+  updateOrderData: (orderData, order_id, accessToken) => {
+    dispatch(Action.updateTrackCode(orderData, order_id, accessToken));
   },
-  cancelOrderData: orderData => {
-    dispatch(Action.cancelOrder(orderData));
+  cancelOrderData: (orderData, accessToken) => {
+    dispatch(Action.cancelOrder(orderData, accessToken));
   }
 });
 

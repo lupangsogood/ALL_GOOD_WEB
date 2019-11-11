@@ -71,7 +71,9 @@ class Dashboard extends Component {
   };
 
   async componentWillMount() {
-    await this.props.fetchProductData();
+    let userData = this.props.userData;
+    let accesToken = userData.token;
+    await this.props.fetchProductData(accesToken);
   }
   componentDidMount() {}
 
@@ -299,8 +301,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchProductData: () => {
-    dispatch(Action.fetchProduct());
+  fetchProductData: accesToken => {
+    dispatch(Action.fetchProduct(accesToken));
   },
   deleteProduct: (product, accesToken) => {
     dispatch(Action.deleteProduct(product, accesToken));

@@ -12,8 +12,7 @@ let config = {
 };
 let configUrlEncoded = {
   headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
-    Authorization: ""
+    "Content-Type": "application/x-www-form-urlencoded"
   }
 };
 
@@ -104,7 +103,8 @@ export function logout() {
 
 //-----------------------------------------------------------------
 
-export function fetchProduct() {
+export function fetchProduct(AUTH_TOKEN) {
+  Axios.defaults.headers.common["Authorization"] = "bearer " + AUTH_TOKEN;
   return dispatch => {
     Axios.get(ALL_GOOD_BROWNIE_API + "product").then(response => {
       switch (response.data.head.statusCode) {
@@ -310,10 +310,16 @@ export function deleteProduct(product, access_token) {
 
 //----------------------------------------------------------------------
 
-export function fetchOrder() {
+export function fetchOrder(access_token) {
   return dispatch => {
+    let user_token = access_token;
+    Object.assign(configUrlEncoded.headers, {
+      ...configUrlEncoded.headers,
+      Authorization: "bearer " + user_token
+    });
+    console.log(configUrlEncoded);
     try {
-      Axios.get(ALL_GOOD_BROWNIE_API + "order")
+      Axios.get(ALL_GOOD_BROWNIE_API + "order", [, configUrlEncoded])
         .then(response => {
           dispatch({
             type: Types.FETCH_ORDER_SUCCESS,
@@ -337,7 +343,7 @@ export function fetchOrder() {
 
 //----------------------------------------------------------------------
 
-export function updateTrackCode(order_ems_barcode, order_id) {
+export function updateTrackCode(order_ems_barcode, order_id, access_token) {
   console.log(order_ems_barcode);
   console.log(order_id);
   return dispatch => {
@@ -359,6 +365,12 @@ export function updateTrackCode(order_ems_barcode, order_id) {
       // for (var test of formData.entries()) {
       //   console.log(test[0] + " " + test[1]);
       // }
+
+      let user_token = access_token;
+      Object.assign(config.headers, {
+        ...configUrlEncoded.headers,
+        Authorization: "bearer " + user_token
+      });
       Axios.post(
         ALL_GOOD_BROWNIE_API + "order/status/" + order_id,
         formData,
