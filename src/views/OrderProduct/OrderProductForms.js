@@ -283,7 +283,11 @@ class OrderProductForms extends Component {
       let disable = false;
       let imageDisable = "false";
 
-      if (element.order_sts_id === "7" || element.order_sts_id === "5") {
+      if (
+        element.order_sts_id === "7" ||
+        element.order_sts_id === "5" ||
+        element.order_sts_id == "2"
+      ) {
         disable = true;
         // console.log(disable);
       } else {
@@ -501,10 +505,10 @@ class OrderProductForms extends Component {
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={() => this.cancleOrder()}>
-              Cancel Order
+              Yes
             </Button>
             <Button color="danger" onClick={this.toggle}>
-              Nope
+              No
             </Button>
           </ModalFooter>
         </Modal>
@@ -524,18 +528,18 @@ class OrderProductForms extends Component {
         >
           <ModalHeader>ยกเลิกรายการ</ModalHeader>
           <ModalBody>
-            ท่านต้องการอัพเดทรายการสั่งซือนี้
+            ท่านต้องการอัพเดทรายการสั่งซือที่
             <strong> {orderId || ""} </strong> ใช่หรือไม่
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={() => this.editOrderData(orderId)}>
-              Update Tracking Code
+              Yes
             </Button>
             <Button
               color="danger"
               onClick={() => this.toggleUpdate(orderId, trackingCode)}
             >
-              Nope
+              No
             </Button>
           </ModalFooter>
         </Modal>
