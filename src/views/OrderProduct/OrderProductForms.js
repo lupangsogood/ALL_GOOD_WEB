@@ -417,7 +417,9 @@ class OrderProductForms extends Component {
             {userData.user_email} <br></br>
             <b>ชื่อ :</b> {userData.user_firstname} <b>นามสกุล :</b>{" "}
             {userData.user_lastname} <br></br>
-            <b>ที่อยู่ :</b> {userData.user_address}
+            <b>ที่อยู่ :</b> {userData.user_address} <br></br>
+            <b>เบอร์โทรติดต่อ : </b>
+            {userData.user_tel}
             <Table responsive striped>
               <thead>
                 <tr align="center">
