@@ -88,9 +88,11 @@ class OrderProductForms extends Component {
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    console.log("Reload");
     let userData = this.props.userData;
-    let accesToken = userData.token;
+    let accesToken = await userData.token;
+    console.log(accesToken);
     this.props.fetchOrder(accesToken);
   }
 
@@ -110,11 +112,13 @@ class OrderProductForms extends Component {
       resultTask: result,
       loading: nextProps.resultTaskOrder.loading
     });
+    let userData = this.props.userData;
+    let accesToken = userData.token;
+    console.log(accesToken);
 
     if (this.state.resultTask === "SUCCESS") {
-      // console.log("TEST Receive Props");
-
-      this.props.fetchOrder();
+      console.log("TEST Receive Props");
+      this.props.fetchOrder(accesToken);
       this.setState({
         // modal: !this.state.modal,
         resultTask: "FAILURE"
@@ -236,7 +240,7 @@ class OrderProductForms extends Component {
 
       if (element.order_sts_id === "7") {
         disable = true;
-        console.log(disable);
+        // console.log(disable);
       } else {
         disable = false;
       }
@@ -246,10 +250,18 @@ class OrderProductForms extends Component {
       } else {
         imageDisable = "true";
       }
+
+      {
+        if (typeof element.order_at === "undefined") {
+          var order_date = "";
+        } else {
+          var order_date = element.order_at.substring(0, 10);
+        }
+      }
       return (
         <tr key={index}>
           <td align="center">{element.order_id}</td>
-          <td align="center">2012/01/01</td>
+          <td align="center">{order_date}</td>
           <td align="center">
             <Button
               color="info"

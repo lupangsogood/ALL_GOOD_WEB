@@ -318,8 +318,10 @@ export function fetchOrder(access_token) {
       Authorization: "bearer " + user_token
     });
     console.log(configUrlEncoded);
+
+    Axios.defaults.headers.common["Authorization"] = "bearer " + user_token;
     try {
-      Axios.get(ALL_GOOD_BROWNIE_API + "order", [, configUrlEncoded])
+      Axios.get(ALL_GOOD_BROWNIE_API + "order")
         .then(response => {
           dispatch({
             type: Types.FETCH_ORDER_SUCCESS,
@@ -367,10 +369,12 @@ export function updateTrackCode(order_ems_barcode, order_id, access_token) {
       // }
 
       let user_token = access_token;
-      Object.assign(config.headers, {
+      Object.assign(configUrlEncoded.headers, {
         ...configUrlEncoded.headers,
         Authorization: "bearer " + user_token
       });
+
+      console.log(configUrlEncoded);
       Axios.post(
         ALL_GOOD_BROWNIE_API + "order/status/" + order_id,
         formData,
@@ -405,7 +409,7 @@ export function updateTrackCode(order_ems_barcode, order_id, access_token) {
   };
 }
 
-export function cancelOrder(orderData) {
+export function cancelOrder(orderData, access_token) {
   console.log(orderData);
   return dispatch => {
     let formData = new URLSearchParams();
@@ -421,10 +425,16 @@ export function cancelOrder(orderData) {
       formData.append(API_VARIABLE.order_sts_id, 7);
       formData.append(API_VARIABLE.order_transfer, 0);
       formData.append(API_VARIABLE.ems_barcode, ems_barcode);
+      let user_token = access_token;
+      Object.assign(configUrlEncoded.headers, {
+        ...configUrlEncoded.headers,
+        Authorization: "bearer " + user_token
+      });
+      for (var test of formData.entries()) {
+        console.log(test[0] + " " + test[1]);
+      }
 
-      // for (var test of formData.entries()) {
-      //   console.log(test[0] + " " + test[1]);
-      // }
+      console.log(configUrlEncoded);
       Axios.post(
         ALL_GOOD_BROWNIE_API + "order/status/" + order.order_id,
         formData,
