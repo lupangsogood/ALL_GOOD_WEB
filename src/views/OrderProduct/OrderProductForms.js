@@ -14,6 +14,10 @@ import {
   ModalBody,
   ModalFooter
 } from "reactstrap";
+import {
+  NotificationContainer,
+  NotificationManager
+} from "react-notifications";
 import { connect } from "react-redux";
 import Action from "../../Action/action";
 
@@ -71,6 +75,7 @@ class OrderProductForms extends Component {
       editOrder: "",
       modal: false,
       detailModal: false,
+      updateModal: false,
       loading: false,
       resultTask: "",
       slipImageModal: {
@@ -120,7 +125,8 @@ class OrderProductForms extends Component {
       console.log("TEST Receive Props");
       this.props.fetchOrder(accesToken);
       this.setState({
-        // modal: !this.state.modal,
+        modal: false,
+        updateModal: false,
         resultTask: "FAILURE"
       });
     } else {
@@ -134,6 +140,30 @@ class OrderProductForms extends Component {
       }
     }
   }
+
+  createNotification = type => {
+    switch (type) {
+      case "info":
+        NotificationManager.info("Info message");
+        break;
+      case "success":
+        NotificationManager.success("Success message", "Title here");
+        break;
+      case "warning":
+        NotificationManager.warning("Warning message", "กรุณากรอกข้อมูล", 3000);
+        break;
+      case "error":
+        NotificationManager.error(
+          "กรุณาตรวจสอบข้อมูลสินค้า",
+          "เกิดข้อผิดพลาด",
+          5000,
+          () => {}
+        );
+        break;
+      default:
+        break;
+    }
+  };
 
   setBadge = order_sts_id => {
     let orderStatus = {
@@ -186,9 +216,10 @@ class OrderProductForms extends Component {
     });
   };
 
-  toggleDetail = orderDetail => {
+  toggleDetail = (orderDetail, orderUserData) => {
     this.setState({
       detailOrder: orderDetail,
+      detailUser: orderUserData,
       detailModal: !this.state.detailModal
     });
   };
@@ -201,6 +232,20 @@ class OrderProductForms extends Component {
         imageModal: !this.state.slipImageModal.imageModal
       }
     });
+  };
+
+  toggleUpdate = (orderId, trackingCode) => {
+    var order_id = orderId;
+    var trackingCode = this.state.editOrder.ems_barcode;
+    if (typeof trackingCode === "undefined" || trackingCode === "") {
+      console.log("เข้าไม่ได้");
+      console.log(trackingCode);
+    } else {
+      this.setState({
+        updateOrderId: orderId,
+        updateModal: !this.state.updateModal
+      });
+    }
   };
 
   updateTrackingCode = trackingCode => {
@@ -238,7 +283,7 @@ class OrderProductForms extends Component {
       let disable = false;
       let imageDisable = "false";
 
-      if (element.order_sts_id === "7") {
+      if (element.order_sts_id === "7" || element.order_sts_id === "5") {
         disable = true;
         // console.log(disable);
       } else {
@@ -265,7 +310,7 @@ class OrderProductForms extends Component {
           <td align="center">
             <Button
               color="info"
-              onClick={() => this.toggleDetail(element.product)}
+              onClick={() => this.toggleDetail(element.product, element.user)}
             >
               <i className="cui-monitor"></i>
             </Button>
@@ -294,7 +339,8 @@ class OrderProductForms extends Component {
               disabled={disable}
               color="success"
               style={{ marginTop: "3px" }}
-              onClick={() => this.editOrderData(element.order_id)}
+              // onClick={() => this.editOrderData(element.order_id)}
+              onClick={() => this.toggleUpdate(element.order_id)}
             >
               <i className="cui-task" style={{ marginRight: "3px" }}></i>
               Update Tracking Code
@@ -319,7 +365,7 @@ class OrderProductForms extends Component {
     });
   };
 
-  setTableDetail = orderDetail => {
+  setTableDetail = (orderDetail, userData) => {
     // let orderDetailData = orderDetail;
     // console.log(orderDetailData);
     return orderDetail.map((element, index) => {
@@ -346,17 +392,32 @@ class OrderProductForms extends Component {
   };
 
   modalDetail = () => {
-    // let orderDetail = this.state.detailOrder;
+    let orderDetail = this.state.detailOrder;
+    let orderUserData = this.state.detailUser;
     // console.log(orderDetail);
+    // console.log(this.state.detailUser);
+    if (typeof orderUserData === "undefined") {
+      var userData = "";
+    } else {
+      var userData = orderUserData;
+    }
     return (
       <div>
         <Modal
           style={{ maxWidth: "90%" }}
           isOpen={this.state.detailModal}
-          toggle={this.toggleDetail}
+          toggle={() => this.toggleDetail(orderDetail, orderUserData)}
         >
-          <ModalHeader>รายละเอียดการสั่งซื้อ</ModalHeader>
+          <ModalHeader>
+            รายละเอียดการสั่งซื้อ
+            {/* <h5>{orderUserData.user_id}</h5> */}
+          </ModalHeader>
           <ModalBody>
+            <b>รหัสลูกค้า :</b> {userData.user_id} <b> อีเมลล์ :</b>{" "}
+            {userData.user_email} <br></br>
+            <b>ชื่อ :</b> {userData.user_firstname} <b>นามสกุล :</b>{" "}
+            {userData.user_lastname} <br></br>
+            <b>ที่อยู่ :</b> {userData.user_address}
             <Table responsive striped>
               <thead>
                 <tr align="center">
@@ -369,14 +430,14 @@ class OrderProductForms extends Component {
                   <th>รวม</th>
                 </tr>
               </thead>
-              <tbody>{this.setTableDetail(this.state.detailOrder)}</tbody>
+              <tbody>{this.setTableDetail(orderDetail, orderUserData)}</tbody>
             </Table>
           </ModalBody>
           <ModalFooter>
             {/* ไว้ใส่ราคารวม */}
             <Button
               color="danger"
-              onClick={() => this.toggleDetail(this.state.detailOrder)}
+              onClick={() => this.toggleDetail(orderDetail, orderUserData)}
             >
               Close
             </Button>
@@ -449,6 +510,37 @@ class OrderProductForms extends Component {
     );
   };
 
+  ModalUpdateTracking = () => {
+    let trackingCode = this.state.ems_barcode;
+    let orderId = this.state.updateOrderId;
+
+    return (
+      <div>
+        <Modal
+          isOpen={this.state.updateModal}
+          toggle={() => this.toggleUpdate(orderId, trackingCode)}
+        >
+          <ModalHeader>ยกเลิกรายการ</ModalHeader>
+          <ModalBody>
+            ท่านต้องการอัพเดทรายการสั่งซือนี้
+            <strong> {orderId || ""} </strong> ใช่หรือไม่
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={() => this.editOrderData(orderId)}>
+              Update Tracking Code
+            </Button>
+            <Button
+              color="danger"
+              onClick={() => this.toggleUpdate(orderId, trackingCode)}
+            >
+              Nope
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
+    );
+  };
+
   render() {
     console.log("init OrderForm");
     return (
@@ -492,6 +584,7 @@ class OrderProductForms extends Component {
             {this.modalDetail()}
             {this.modalSlipImage()}
             {this.ModalDelete()}
+            {this.ModalUpdateTracking()}
           </Col>
         </Row>
       </div>
