@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import {
   Badge,
   Card,
@@ -13,15 +13,12 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter
-} from "reactstrap";
-import {
-  NotificationContainer,
-  NotificationManager
-} from "react-notifications";
-import { connect } from "react-redux";
-import Action from "../../Action/action";
+} from "reactstrap"
+import { NotificationContainer, NotificationManager } from "react-notifications"
+import { connect } from "react-redux"
+import Action from "../../Action/action"
 
-import waitingImageUrl from "../../assets/img/waiting.png";
+import waitingImageUrl from "../../assets/img/waiting.png"
 // const imageUrl =
 //   "https://images.pexels.com/photos/20787/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=350";
 
@@ -70,7 +67,7 @@ import waitingImageUrl from "../../assets/img/waiting.png";
 
 class OrderProductForms extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       editOrder: "",
       modal: false,
@@ -90,15 +87,15 @@ class OrderProductForms extends Component {
           product: {}
         }
       ]
-    };
+    }
   }
 
   async componentWillMount() {
-    console.log("Reload");
-    let userData = this.props.userData;
-    let accesToken = await userData.token;
-    console.log(accesToken);
-    this.props.fetchOrder(accesToken);
+    console.log("Reload")
+    let userData = this.props.userData
+    let accesToken = await userData.token
+    console.log(accesToken)
+    this.props.fetchOrder(accesToken)
   }
 
   // async componentDidMount() {
@@ -110,32 +107,32 @@ class OrderProductForms extends Component {
   // }
 
   componentWillReceiveProps(nextProps) {
-    let loading = this.state.loading;
-    let result = nextProps.resultTaskOrder.body;
+    let loading = this.state.loading
+    let result = nextProps.resultTaskOrder.body
     // console.log(result);
     this.setState({
       resultTask: result,
       loading: nextProps.resultTaskOrder.loading
-    });
-    let userData = this.props.userData;
-    let accesToken = userData.token;
-    console.log(accesToken);
+    })
+    let userData = this.props.userData
+    let accesToken = userData.token
+    console.log(accesToken)
 
     if (this.state.resultTask === "SUCCESS") {
-      console.log("TEST Receive Props");
-      this.props.fetchOrder(accesToken);
+      console.log("TEST Receive Props")
+      this.props.fetchOrder(accesToken)
       this.setState({
         modal: false,
         updateModal: false,
         resultTask: "FAILURE"
-      });
+      })
     } else {
       if (this.props.resultTaskOrder.loading !== loading) {
       } else {
-        console.log("FAILURE");
+        console.log("FAILURE")
         this.setState({
           loading: false
-        });
+        })
         // this.createNotification("error");
       }
     }
@@ -144,85 +141,85 @@ class OrderProductForms extends Component {
   createNotification = type => {
     switch (type) {
       case "info":
-        NotificationManager.info("Info message");
-        break;
+        NotificationManager.info("Info message")
+        break
       case "success":
-        NotificationManager.success("Success message", "Title here");
-        break;
+        NotificationManager.success("Success message", "Title here")
+        break
       case "warning":
-        NotificationManager.warning("Warning message", "กรุณากรอกข้อมูล", 3000);
-        break;
+        NotificationManager.warning("Warning message", "กรุณากรอกข้อมูล", 3000)
+        break
       case "error":
         NotificationManager.error(
           "กรุณาตรวจสอบข้อมูลสินค้า",
           "เกิดข้อผิดพลาด",
           5000,
           () => {}
-        );
-        break;
+        )
+        break
       default:
-        break;
+        break
     }
-  };
+  }
 
   setBadge = order_sts_id => {
     let orderStatus = {
       color: "",
       text: ""
-    };
+    }
 
     switch (order_sts_id) {
       case "2":
         orderStatus = {
           color: "primary",
           text: "รอชำระเงิน"
-        };
-        return orderStatus;
+        }
+        return orderStatus
 
       case "3":
         orderStatus = {
           color: "warning",
           text: "รอตรวจสอบ"
-        };
-        return orderStatus;
+        }
+        return orderStatus
       case "4":
         orderStatus = {
           color: "info",
           text: "รอขนส่ง"
-        };
-        return orderStatus;
+        }
+        return orderStatus
       case "5":
         orderStatus = {
           color: "success",
           text: "สำเร็จ"
-        };
-        return orderStatus;
+        }
+        return orderStatus
 
       case "7":
         orderStatus = {
           color: "dark",
           text: "ยกเลิกรายการแล้ว"
-        };
-        return orderStatus;
+        }
+        return orderStatus
       default:
-        return orderStatus;
+        return orderStatus
     }
-  };
+  }
 
   toggle = orderData => {
     this.setState({
       modal: !this.state.modal,
       calcelOrderData: orderData
-    });
-  };
+    })
+  }
 
   toggleDetail = (orderDetail, orderUserData) => {
     this.setState({
       detailOrder: orderDetail,
       detailUser: orderUserData,
       detailModal: !this.state.detailModal
-    });
-  };
+    })
+  }
 
   toggleImage = imageUrl => {
     // console.log(imageUrl);
@@ -231,80 +228,81 @@ class OrderProductForms extends Component {
         imageUrl: imageUrl,
         imageModal: !this.state.slipImageModal.imageModal
       }
-    });
-  };
+    })
+  }
 
   toggleUpdate = (orderId, trackingCode) => {
-    var order_id = orderId;
-    var trackingCode = this.state.editOrder.ems_barcode;
+    var order_id = orderId
+    var trackingCode = this.state.editOrder.ems_barcode
     if (typeof trackingCode === "undefined" || trackingCode === "") {
-      console.log("เข้าไม่ได้");
-      console.log(trackingCode);
+      console.log("เข้าไม่ได้")
+      console.log(trackingCode)
     } else {
       this.setState({
         updateOrderId: orderId,
         updateModal: !this.state.updateModal
-      });
+      })
     }
-  };
+  }
 
   updateTrackingCode = trackingCode => {
-    let name = trackingCode.target.name;
-    let value = trackingCode.target.value;
+    let name = trackingCode.target.name
+    let value = trackingCode.target.value
     this.setState({
       editOrder: {
         ...this.state.editOrder,
         [name]: value
       }
-    });
+    })
 
-    console.log(this.state.editOrder);
-  };
+    console.log(this.state.editOrder)
+  }
 
   editOrderData = order_id => {
-    console.log(order_id);
-    console.log(this.state.editOrder);
+    console.log(order_id)
+    console.log(this.state.editOrder)
 
-    let userData = this.props.userData;
-    let accesToken = userData.token;
+    let userData = this.props.userData
+    let accesToken = userData.token
     this.props.updateOrderData(
       this.state.editOrder.ems_barcode,
       order_id,
       accesToken
-    );
-  };
+    )
+  }
 
   setTableData = order => {
-    console.log(order);
-    let orderData = order.order;
+    console.log(order)
+    let orderData = order.order
 
     return orderData.map((element, index) => {
-      let orderStatus = this.setBadge(element.order_sts_id);
-      let disable = false;
-      let imageDisable = "false";
+      let orderStatus = this.setBadge(element.order_sts_id)
+      let disable = false
+      let imageDisable = "false"
 
       if (
         element.order_sts_id === "7" ||
         element.order_sts_id === "5" ||
         element.order_sts_id == "2"
       ) {
-        disable = true;
+        disable = true
         // console.log(disable);
       } else {
-        disable = false;
+        disable = false
       }
 
       if (typeof element.order_img_url === "undefined") {
-        imageDisable = "false";
+        imageDisable = "false"
       } else {
-        imageDisable = "true";
+        imageDisable = "true"
       }
 
       {
         if (typeof element.order_at === "undefined") {
-          var order_date = "";
+          var order_date = ""
         } else {
-          var order_date = element.order_at.substring(0, 10);
+          var order_date = `${element.order_at}`.substring(0, 10)
+          console.log(element.order_at)
         }
       }
       return (
@@ -365,15 +363,15 @@ class OrderProductForms extends Component {
             </Button>
           </td>
         </tr>
-      );
-    });
-  };
+      )
+    })
+  }
 
   setTableDetail = (orderDetail, userData) => {
     // let orderDetailData = orderDetail;
     // console.log(orderDetailData);
     return orderDetail.map((element, index) => {
-      let amount = element.price * element.quantity;
+      let amount = element.price * element.quantity
       return (
         <tr key={index}>
           <td align="center">{element.product_id}</td>
@@ -391,19 +389,19 @@ class OrderProductForms extends Component {
           <td align="center">{element.quantity}</td>
           <td align="center">{amount}</td>
         </tr>
-      );
-    });
-  };
+      )
+    })
+  }
 
   modalDetail = () => {
-    let orderDetail = this.state.detailOrder;
-    let orderUserData = this.state.detailUser;
+    let orderDetail = this.state.detailOrder
+    let orderUserData = this.state.detailUser
     // console.log(orderDetail);
     // console.log(this.state.detailUser);
     if (typeof orderUserData === "undefined") {
-      var userData = "";
+      var userData = ""
     } else {
-      var userData = orderUserData;
+      var userData = orderUserData
     }
     return (
       <div>
@@ -450,11 +448,11 @@ class OrderProductForms extends Component {
           </ModalFooter>
         </Modal>
       </div>
-    );
-  };
+    )
+  }
 
   modalSlipImage = () => {
-    const slipImageUrl = this.state.slipImageModal.imageUrl;
+    const slipImageUrl = this.state.slipImageModal.imageUrl
     // console.log(slipImageUrl);
     // console.log(this.state.slipImageModal);
     return (
@@ -478,22 +476,22 @@ class OrderProductForms extends Component {
           </ModalFooter>
         </Modal>
       </div>
-    );
-  };
+    )
+  }
 
   cancleOrder = () => {
-    let orderData = this.state.calcelOrderData;
+    let orderData = this.state.calcelOrderData
 
-    let userData = this.props.userData;
-    let accesToken = userData.token;
-    this.props.cancelOrderData(orderData, accesToken);
+    let userData = this.props.userData
+    let accesToken = userData.token
+    this.props.cancelOrderData(orderData, accesToken)
     this.setState({
       modal: !this.state.modal
-    });
-  };
+    })
+  }
 
   ModalDelete = () => {
-    let order = this.state.calcelOrderData;
+    let order = this.state.calcelOrderData
     // console.log(order);
     return (
       <div>
@@ -513,12 +511,12 @@ class OrderProductForms extends Component {
           </ModalFooter>
         </Modal>
       </div>
-    );
-  };
+    )
+  }
 
   ModalUpdateTracking = () => {
-    let trackingCode = this.state.ems_barcode;
-    let orderId = this.state.updateOrderId;
+    let trackingCode = this.state.ems_barcode
+    let orderId = this.state.updateOrderId
 
     return (
       <div>
@@ -544,11 +542,11 @@ class OrderProductForms extends Component {
           </ModalFooter>
         </Modal>
       </div>
-    );
-  };
+    )
+  }
 
   render() {
-    console.log("init OrderForm");
+    console.log("init OrderForm")
     return (
       <div className="animated fadeIn">
         <Row>
@@ -594,7 +592,7 @@ class OrderProductForms extends Component {
           </Col>
         </Row>
       </div>
-    );
+    )
   }
 }
 
@@ -602,22 +600,19 @@ const mapStateToProps = state => ({
   orderDataFetch: state.FetchOrderReducer.body.data,
   resultTaskOrder: state.EditOrderReducer,
   userData: state.UserReducer
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   fetchOrder: access_token => {
-    dispatch(Action.fetchOrder(access_token));
+    dispatch(Action.fetchOrder(access_token))
   },
 
   updateOrderData: (orderData, order_id, accessToken) => {
-    dispatch(Action.updateTrackCode(orderData, order_id, accessToken));
+    dispatch(Action.updateTrackCode(orderData, order_id, accessToken))
   },
   cancelOrderData: (orderData, accessToken) => {
-    dispatch(Action.cancelOrder(orderData, accessToken));
+    dispatch(Action.cancelOrder(orderData, accessToken))
   }
-});
+})
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrderProductForms);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderProductForms)
