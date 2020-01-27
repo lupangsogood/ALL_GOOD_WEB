@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
+import React, { Component } from "react"
+import { NavLink } from "react-router-dom"
 import {
   UncontrolledDropdown,
   DropdownItem,
@@ -7,28 +7,28 @@ import {
   DropdownToggle,
   Nav,
   NavItem
-} from "reactstrap";
-import PropTypes from "prop-types";
-import { AppNavbarBrand, AppSidebarToggler } from "@coreui/react";
-import logo from "../../src/assets/img/logo2.jpg";
-import dog from "../../src/assets/img/test.jpg";
-import { connect } from "react-redux";
-import Action from "../Action/action";
+} from "reactstrap"
+import PropTypes from "prop-types"
+import { AppNavbarBrand, AppSidebarToggler } from "@coreui/react"
+import logo from "../../src/assets/img/allgood_logo.jpg"
+import dog from "../../src/assets/img/test.jpg"
+import { connect } from "react-redux"
+import Action from "../Action/action"
 
 const propTypes = {
   children: PropTypes.node
-};
+}
 
-const defaultProps = {};
+const defaultProps = {}
 
 class DefaultHeader extends Component {
   userLogout = e => {
-    this.props.logout();
-    this.props.onLogout(e);
-  };
+    this.props.logout()
+    this.props.onLogout(e)
+  }
   render() {
     // eslint-disable-next-line
-    const { children, ...attributes } = this.props;
+    const { children, ...attributes } = this.props
 
     return (
       <React.Fragment>
@@ -59,7 +59,7 @@ class DefaultHeader extends Component {
           <UncontrolledDropdown nav direction="down">
             <DropdownToggle nav>
               <img
-                src={dog}
+                src={logo}
                 className="img-avatar"
                 alt="admin@allgoodbrownie.com"
               />
@@ -76,18 +76,15 @@ class DefaultHeader extends Component {
         </Nav>
         {/*<AppAsideToggler className="d-lg-none" mobile />*/}
       </React.Fragment>
-    );
+    )
   }
 }
 
-DefaultHeader.propTypes = propTypes;
-DefaultHeader.defaultProps = defaultProps;
+DefaultHeader.propTypes = propTypes
+DefaultHeader.defaultProps = defaultProps
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(Action.logout())
-});
+})
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(DefaultHeader);
+export default connect(null, mapDispatchToProps)(DefaultHeader)

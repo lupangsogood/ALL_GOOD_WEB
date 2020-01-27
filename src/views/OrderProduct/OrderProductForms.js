@@ -297,14 +297,12 @@ class OrderProductForms extends Component {
         imageDisable = "true"
       }
 
-      {
-        if (typeof element.order_at === "undefined") {
-          var order_date = ""
-        } else {
-          var order_date = `${element.order_at}`.substring(0, 10)
-          console.log(element.order_at)
-        }
+      if (typeof element.order_at === "undefined") {
+        var order_date = ""
+      } else {
+        var order_date = `${element.order_at}`.substring(0, 10)
       }
+
       return (
         <tr key={index}>
           <td align="center">{element.order_id}</td>
