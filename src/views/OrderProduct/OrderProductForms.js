@@ -12,7 +12,10 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  Pagination,
+  PaginationItem,
+  PaginationLink
 } from "reactstrap"
 import { NotificationContainer, NotificationManager } from "react-notifications"
 import { connect } from "react-redux"
@@ -64,10 +67,10 @@ import waitingImageUrl from "../../assets/img/waiting.png"
 //     order_action: ""
 //   }
 // ];
-
 class OrderProductForms extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
       editOrder: "",
       modal: false,
@@ -86,7 +89,8 @@ class OrderProductForms extends Component {
         {
           product: {}
         }
-      ]
+      ],
+      pageNumber: 1
     }
   }
 
@@ -271,11 +275,12 @@ class OrderProductForms extends Component {
     )
   }
 
-  setTableData = order => {
-    console.log(order)
+  setTableData = pageNumber => {
+    let order = this.props.orderDataFetch
     let orderData = order.order
+    let orderDataSlice = orderData.slice((pageNumber - 1) * 20, pageNumber * 20)
 
-    return orderData.map((element, index) => {
+    return orderDataSlice.map((element, index) => {
       let orderStatus = this.setBadge(element.order_sts_id)
       let disable = false
       let imageDisable = "false"
@@ -283,7 +288,7 @@ class OrderProductForms extends Component {
       if (
         element.order_sts_id === "7" ||
         element.order_sts_id === "5" ||
-        element.order_sts_id == "2"
+        element.order_sts_id === "2"
       ) {
         disable = true
         // console.log(disable);
@@ -366,8 +371,6 @@ class OrderProductForms extends Component {
   }
 
   setTableDetail = (orderDetail, userData) => {
-    // let orderDetailData = orderDetail;
-    // console.log(orderDetailData);
     return orderDetail.map((element, index) => {
       let amount = element.price * element.quantity
       return (
@@ -543,8 +546,40 @@ class OrderProductForms extends Component {
     )
   }
 
+  setPagination = pageNumber => {
+    let orderData = this.props.orderDataFetch.order
+    let orderDataPagination = Array(Math.ceil(orderData.length / 20))
+    return orderDataPagination.fill().map((_, index) => {
+      return (
+        <PaginationItem key={index + 1} active={pageNumber === index + 1}>
+          <PaginationLink
+            value={index + 1}
+            onClick={e => {
+              this.setIsActivePage(index + 1, e)
+            }}
+          >
+            {index + 1}
+          </PaginationLink>
+        </PaginationItem>
+      )
+    })
+  }
+
+  setIsActivePage = (pageNumber, e) => {
+    console.log(this.state.pageNumber, pageNumber)
+    e.preventDefault()
+    this.setTableData(pageNumber)
+    this.setState({
+      pageNumber: pageNumber
+    })
+  }
+
   render() {
     console.log("init OrderForm")
+    let { pageNumber } = this.state
+    let sizeOfPagination = Math.ceil(
+      this.props.orderDataFetch.order.length / 20
+    )
     return (
       <div className="animated fadeIn">
         <Row>
@@ -579,7 +614,7 @@ class OrderProductForms extends Component {
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody>{this.setTableData(this.props.orderDataFetch)}</tbody>
+                  <tbody>{this.setTableData(this.state.pageNumber)}</tbody>
                 </Table>
               </CardBody>
             </Card>
@@ -589,6 +624,25 @@ class OrderProductForms extends Component {
             {this.ModalUpdateTracking()}
           </Col>
         </Row>
+        <Pagination size="lg">
+          <PaginationItem key={0} disabled={pageNumber - 1 <= 0}>
+            <PaginationLink
+              onClick={e => this.setIsActivePage(pageNumber - 1, e)}
+              previous
+            />
+          </PaginationItem>
+          {this.setPagination(pageNumber)}
+
+          <PaginationItem
+            key={sizeOfPagination}
+            disabled={pageNumber >= sizeOfPagination}
+          >
+            <PaginationLink
+              onClick={e => this.setIsActivePage(pageNumber + 1, e)}
+              next
+            />
+          </PaginationItem>
+        </Pagination>
       </div>
     )
   }
