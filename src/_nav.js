@@ -36,37 +36,23 @@ export default {
         attributes: {}
       }
     },
-    // {
-    //   name: 'Buttons',
-    //   url: '/buttons',
-    //   icon: 'icon-cursor',
-    //   children: [
-    //     {
-    //       name: 'Buttons',
-    //       url: '/buttons/buttons',
-    //       icon: 'icon-cursor',
-    //     },
-    //     {
-    //       name: 'Button dropdowns',
-    //       url: '/buttons/button-dropdowns',
-    //       icon: 'icon-cursor',
-    //     },
-    //     {
-    //       name: 'Button groups',
-    //       url: '/buttons/button-groups',
-    //       icon: 'icon-cursor',
-    //     },
-    //     {
-    //       name: 'Brand Buttons',
-    //       url: '/buttons/brand-buttons',
-    //       icon: 'icon-cursor',
-    //     },
-    //   ],
-    // },
     {
       name: "รายการสั่งซื้อ",
       url: "/order/list",
       icon: "cui-tablet"
+    },
+    {
+      title: true,
+      name: "Messenger",
+      wrapper: {
+        element: "",
+        attributes: {}
+      }
+    },
+    {
+      name: "แชท",
+      url: "/chat",
+      icon: "cil-chat-bubble"
     }
     // {
     //   name: "รายการจัดส่ง",
@@ -74,4 +60,4 @@ export default {
     //   icon: "cui-cloud"
     // }
   ]
-};
+}

@@ -18,6 +18,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-loading-screen": "0.0.17",
+    "react-messenger-customer-chat": "^0.7.2",
     "react-notifications": "^1.4.3",
     "react-redux": "^7.1.1",
     "react-router": "^5.1.2",

@@ -102,14 +102,6 @@ class OrderProductForms extends Component {
     this.props.fetchOrder(accesToken)
   }
 
-  // async componentDidMount() {
-  //   await this.props.fetchOrder();
-
-  //   this.setState({
-  //     editOrder: this.props.orderDataFetch
-  //   });
-  // }
-
   componentWillReceiveProps(nextProps) {
     let loading = this.state.loading
     let result = nextProps.resultTaskOrder.body
@@ -278,7 +270,14 @@ class OrderProductForms extends Component {
   setTableData = pageNumber => {
     let order = this.props.orderDataFetch
     let orderData = order.order
-    let orderDataSlice = orderData.slice((pageNumber - 1) * 20, pageNumber * 20)
+    let orderDataSort = orderData.sort((a, b) =>
+      a.order_id < b.order_id ? 1 : -1
+    )
+    console.log(orderDataSort)
+    let orderDataSlice = orderDataSort.slice(
+      (pageNumber - 1) * 20,
+      pageNumber * 20
+    )
 
     return orderDataSlice.map((element, index) => {
       let orderStatus = this.setBadge(element.order_sts_id)
@@ -624,7 +623,7 @@ class OrderProductForms extends Component {
             {this.ModalUpdateTracking()}
           </Col>
         </Row>
-        <Pagination size="lg">
+        <Pagination className="row justify-content-md-center" size="lg">
           <PaginationItem key={0} disabled={pageNumber - 1 <= 0}>
             <PaginationLink
               onClick={e => this.setIsActivePage(pageNumber - 1, e)}
