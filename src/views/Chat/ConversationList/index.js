@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react"
 import ConversationSearch from "../ConversationSearch"
 import ConversationListItem from "../ConversationListItem"
 import Toolbar from "../Toolbar"
-import ToolbarButton from "../ToolbarButton"
 import axios from "axios"
-
 import "./ConversationList.css"
+import { db } from "../.././../firebaseConfig/firebase"
 
 export default function ConversationList(props) {
   const [conversations, setConversations] = useState([])
@@ -24,6 +23,18 @@ export default function ConversationList(props) {
         }
       })
       setConversations([...conversations, ...newConversations])
+    })
+  }
+
+  //setModel ให้ตรงกับ FireStore ของเรา
+  //เสร็จแล้วให้ ทำ Function คลิกเพื่อโหลดข้อมูล Chat ของ Collection นั้นๆ
+
+  // อาจจะต้องใช้ context มารับส่งข้อมูล
+  const getChatRoom = () => {
+    db.collection("chat").onSnapshot(value => {
+      console.log(value)
+      const data = value.docs.map(doc => doc.data())
+      console.log(data)
     })
   }
 
