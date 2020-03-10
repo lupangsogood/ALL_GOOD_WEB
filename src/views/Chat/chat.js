@@ -1,15 +1,38 @@
-import React, { Component } from "react"
+import React, { useEffect, useState } from "react"
 import { Container, Row, Col } from "reactstrap"
 import MessageList from "./MessageList"
 import ConersationList from "./ConversationList"
 import "./Messenger/Messenger.css"
-
 // import { firebase, db } from "../../firebaseConfig/firebase"
+export const RoomIdStoreContext = React.createContext()
 
-class ChatList extends Component {
-  componentWillMount() {
-    this.fetctChatRoomRealtime()
+export default function ChatList() {
+  const [roomIdStore, setRoomIdStore] = useState([
+    {
+      roomId: "testRoomIdStore"
+    }
+  ])
+
+  const RoomIdStoreProvider = ({ children }) => {
+    const store = {
+      roomId: roomIdStore
+    }
+    return (
+      <RoomIdStoreContext.Provider value={store}>
+        {children}
+      </RoomIdStoreContext.Provider>
+    )
   }
+
+  const RoomIdStoreConsumer = ({ children }) => {
+    return (
+      <RoomIdStoreContext.Consumer>
+        {value => children(value)}
+      </RoomIdStoreContext.Consumer>
+    )
+  }
+
+  // this.fetctChatRoomRealtime()
 
   //GetDataOnce
   // fetctChatRoom = () => {
@@ -30,8 +53,8 @@ class ChatList extends Component {
   //   })
   // }
 
-  render() {
-    return (
+  return (
+    <RoomIdStoreProvider>
       <Row className="row justify-content-md-center messenger">
         <Col xs="12" md="5" xl="3">
           <Container className="scrollable">
@@ -44,7 +67,6 @@ class ChatList extends Component {
           </Container>
         </Col>
       </Row>
-    )
-  }
+    </RoomIdStoreProvider>
+  )
 }
-export default ChatList

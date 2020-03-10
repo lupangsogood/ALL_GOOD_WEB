@@ -35,6 +35,12 @@ export default function ConversationList(props) {
       console.log(value)
       const data = value.docs.map(doc => doc.data())
       console.log(data)
+      //เช็ค RoomId ก่อนด้วย แล้วส่งเข้าไปใน newConversation
+
+      // เช็คก่อนว่าเป็น array มั้ย
+      // เช็ค Array ว่าเรียงจากอะไร
+      let newConversations = data
+      setConversations([...conversations, ...newConversations])
     })
   }
 

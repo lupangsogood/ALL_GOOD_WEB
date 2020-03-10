@@ -145,11 +145,9 @@ export default function MessageList(props) {
           data={current}
         />
       )
-
       // Proceed to the next message.
       i += 1
     }
-
     return tempMessages
   }
 
@@ -158,7 +156,6 @@ export default function MessageList(props) {
       <Toolbar title="Conversation Title" />
 
       <div className="message-list-container">{renderMessages()}</div>
-
       <Compose />
     </div>
   )
