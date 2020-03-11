@@ -21,10 +21,30 @@ export default function ChatList(props) {
     )
   }
 
+  const getDataOnce = () => {
+    let getLastRoomId = db
+      .collection("chat")
+      .orderBy("time", "desc")
+      .limit(1)
+      .get()
+      .then(doc => {
+        const data = doc.docs.map(doc => {
+          getRoomId(doc.id)
+        })
+        // getRoomId(data.id)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  useEffect(() => {
+    getDataOnce()
+  }, [])
+
   const getRoomId = roomId => {
     console.log("CHECK" + roomId)
     setRoomIdStore(roomId)
-    console.log(roomIdStore)
   }
 
   //ทำ callBack ให้ตอนกดเลือก Chat

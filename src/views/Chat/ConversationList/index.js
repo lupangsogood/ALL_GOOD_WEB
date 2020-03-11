@@ -49,6 +49,7 @@ export default function ConversationList(props) {
     db.collection("chat").onSnapshot(value => {
       console.log(value)
       const newConversation = value.docs.map(doc => {
+        console.log(doc.id)
         if (
           doc.data().firstname === "" ||
           typeof doc.data().firstname === "undefined"
@@ -57,10 +58,12 @@ export default function ConversationList(props) {
           return {
             photo: doc.data().image,
             name: `${doc.data().firstname} ${doc.data().lastname}`,
-            text: "TEST MESSAGE"
+            text: "TEST MESSAGE",
+            roomId: doc.id
           }
         }
       })
+
       setChatListStore([
         ...chatListStore,
         ...newConversation.filter(element => {

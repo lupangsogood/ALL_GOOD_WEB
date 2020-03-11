@@ -10,10 +10,10 @@ export default function ConversationListItem(props) {
     shave(".conversation-snippet", 20)
   })
 
-  const { photo, name, text } = props.data
+  const { photo, name, text, roomId } = props.data
 
   const getRoomIdFromClick = () => {
-    props.callback(name)
+    props.callback(roomId)
   }
   return (
     <div

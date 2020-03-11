@@ -10,9 +10,11 @@ import "./MessageList.css"
 import { RoomIdStoreContext } from "../chat"
 
 export default function MessageList(props) {
+  let roomIdData = useContext(RoomIdStoreContext)
+  console.log(roomIdData)
   const [messages, setMessages] = useState([])
   const [roomId, setRoomId] = useState({
-    roomIdState: useContext(RoomIdStoreContext) ? "KDIDCjEUQaR6pdkNMrEj" : ""
+    roomIdState: "roomIdData"
   })
 
   useEffect(() => {
@@ -162,7 +164,7 @@ export default function MessageList(props) {
   // อาจจะต้องใช้ context มารับส่งข้อมูล
   const getMessageChatRoom = () => {
     db.collection("chat")
-      .doc(`${roomId.roomIdState}`)
+      .doc(`${roomIdData.roomId}`)
       .collection("message")
       .orderBy("time")
       .onSnapshot(value => {
@@ -177,7 +179,6 @@ export default function MessageList(props) {
             timestamp: new Date().getTime()
           })
           setMessages([...messages, ...tempMessagesDocData])
-          console.log(tempMessagesDocData)
         })
       })
   }
@@ -191,7 +192,7 @@ export default function MessageList(props) {
 
     // console.log(messageData)
     db.collection("chat")
-      .doc("KDIDCjEUQaR6pdkNMrEj")
+      .doc(`${roomIdData.roomId}`)
       .collection("message")
       .doc()
       .set(messageData)
