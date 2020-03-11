@@ -10,6 +10,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "firebase": "^7.10.0",
+    "firebase-admin": "^8.9.2",
     "flag-icon-css": "^3.4.6",
     "font-awesome": "^4.7.0",
     "form-data": "^2.5.1",

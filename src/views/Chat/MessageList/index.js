@@ -4,11 +4,10 @@ import Toolbar from "../Toolbar"
 import ToolbarButton from "../ToolbarButton"
 import Message from "../Message"
 import moment from "moment"
-import { db } from "../.././../firebaseConfig/firebase"
+import { firebase, db } from "../.././../firebaseConfig/firebase"
 
 import "./MessageList.css"
 import { RoomIdStoreContext } from "../chat"
-const MY_USER_ID = "apple"
 
 export default function MessageList(props) {
   const [messages, setMessages] = useState([])
@@ -16,6 +15,9 @@ export default function MessageList(props) {
     roomIdState: useContext(RoomIdStoreContext) ? "KDIDCjEUQaR6pdkNMrEj" : ""
   })
 
+  useEffect(() => {
+    getMessageChatRoom()
+  }, [])
   // useEffect(() => {
   //   getMessageChatRoom()
   // }, [])
@@ -180,11 +182,26 @@ export default function MessageList(props) {
       })
   }
 
+  const sendData = message => {
+    let messageData = {
+      role: "admin",
+      message: message,
+      time: firebase.firestore.Timestamp.now()
+    }
+
+    // console.log(messageData)
+    db.collection("chat")
+      .doc("KDIDCjEUQaR6pdkNMrEj")
+      .collection("message")
+      .doc()
+      .set(messageData)
+  }
+
   return (
     <div className="message-list">
       <Toolbar title="Conversation Title" />
       <div className="message-list-container">{renderMessages()}</div>
-      <Compose />
+      <Compose addMessage={sendData} />
     </div>
   )
 }
