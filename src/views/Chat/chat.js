@@ -3,15 +3,12 @@ import { Container, Row, Col } from "reactstrap"
 import MessageList from "./MessageList"
 import ConersationList from "./ConversationList"
 import "./Messenger/Messenger.css"
-// import { firebase, db } from "../../firebaseConfig/firebase"
+import { firebase, db } from "../../firebaseConfig/firebase"
 export const RoomIdStoreContext = React.createContext()
+export const ChatListStoreContext = React.createContext()
 
-export default function ChatList() {
-  const [roomIdStore, setRoomIdStore] = useState([
-    {
-      roomId: "testRoomIdStore"
-    }
-  ])
+export default function ChatList(props) {
+  const [roomIdStore, setRoomIdStore] = useState()
 
   const RoomIdStoreProvider = ({ children }) => {
     const store = {
@@ -24,49 +21,28 @@ export default function ChatList() {
     )
   }
 
-  const RoomIdStoreConsumer = ({ children }) => {
-    return (
-      <RoomIdStoreContext.Consumer>
-        {value => children(value)}
-      </RoomIdStoreContext.Consumer>
-    )
+  const getRoomId = roomId => {
+    console.log("CHECK" + roomId)
+    setRoomIdStore(roomId)
+    console.log(roomIdStore)
   }
 
-  // this.fetctChatRoomRealtime()
-
-  //GetDataOnce
-  // fetctChatRoom = () => {
-  //   db.collection("chat")
-  //     .get()
-  //     .then(value => {
-  //       const data = value.docs.map(doc => doc.data())
-  //       console.log(data)
-  //     })
-  // }
-
-  //Listener Realtime Update
-  // fetctChatRoomRealtime() {
-  //   db.collection("chat").onSnapshot(value => {
-  //     console.log(value)
-  //     const data = value.docs.map(doc => doc.data())
-  //     console.log(data)
-  //   })
-  // }
-
+  //ทำ callBack ให้ตอนกดเลือก Chat
+  //แล้วส่ง RoomId กลับมา เพื่อไปใช้ในหน้า MessageItem
   return (
-    <RoomIdStoreProvider>
-      <Row className="row justify-content-md-center messenger">
-        <Col xs="12" md="5" xl="3">
-          <Container className="scrollable">
-            <ConersationList />
-          </Container>
-        </Col>
-        <Col xs="3" md="7" xl="7">
-          <Container className="scrollable">
+    <Row className="row justify-content-md-center messenger">
+      <Col xs="12" md="5" xl="3">
+        <Container className="scrollable">
+          <ConersationList callBackRoomId={getRoomId} />
+        </Container>
+      </Col>
+      <Col xs="3" md="7" xl="7">
+        <Container className="scrollable">
+          <RoomIdStoreProvider>
             <MessageList />
-          </Container>
-        </Col>
-      </Row>
-    </RoomIdStoreProvider>
+          </RoomIdStoreProvider>
+        </Container>
+      </Col>
+    </Row>
   )
 }
