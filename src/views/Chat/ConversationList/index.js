@@ -46,31 +46,33 @@ export default function ConversationList(props) {
 
   // Listener Realtime Update
   const fetctChatRoomRealtime = () => {
-    db.collection("chat").onSnapshot(value => {
-      console.log(value)
-      const newConversation = value.docs.map(doc => {
-        console.log(doc.id)
-        if (
-          doc.data().firstname === "" ||
-          typeof doc.data().firstname === "undefined"
-        ) {
-        } else {
-          return {
-            photo: doc.data().image,
-            name: `${doc.data().firstname} ${doc.data().lastname}`,
-            text: doc.data().message,
-            roomId: doc.id
+    db.collection("chat")
+      .orderBy("time", "desc")
+      .onSnapshot(value => {
+        console.log(value)
+        const newConversation = value.docs.map(doc => {
+          console.log(doc.id)
+          if (
+            doc.data().firstname === "" ||
+            typeof doc.data().firstname === "undefined"
+          ) {
+          } else {
+            return {
+              photo: doc.data().image,
+              name: `${doc.data().firstname} ${doc.data().lastname}`,
+              text: doc.data().message,
+              roomId: doc.id
+            }
           }
-        }
-      })
-
-      setChatListStore([
-        ...chatListStore,
-        ...newConversation.filter(element => {
-          return typeof element === "object"
         })
-      ])
-    })
+
+        setChatListStore([
+          ...chatListStore,
+          ...newConversation.filter(element => {
+            return typeof element === "object"
+          })
+        ])
+      })
   }
 
   //setModel ให้ตรงกับ FireStore ของเรา
