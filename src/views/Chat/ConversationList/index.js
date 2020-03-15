@@ -8,30 +8,30 @@ import { db } from "../.././../firebaseConfig/firebase"
 import { ChatListStoreContext } from "../chat"
 
 export default function ConversationList(props) {
-  const [conversations, setConversations] = useState([])
+  // const [conversations, setConversations] = useState([])
   const [chatListStore, setChatListStore] = useState([])
 
-  useEffect(() => {
-    getConversations()
-  }, [])
+  // useEffect(() => {
+  //   getConversations()
+  // }, [])
 
   useEffect(() => {
     fetctChatRoomRealtime()
   }, [])
 
-  const getConversations = () => {
-    axios.get("https://randomuser.me/api/?results=20").then(response => {
-      let newConversations = response.data.results.map(result => {
-        return {
-          photo: result.picture.large,
-          name: `${result.name.first} ${result.name.last}`,
-          text:
-            "Hello world! This is a long message that needs to be truncated."
-        }
-      })
-      setConversations([...conversations, ...newConversations])
-    })
-  }
+  // const getConversations = () => {
+  //   axios.get("https://randomuser.me/api/?results=20").then(response => {
+  //     let newConversations = response.data.results.map(result => {
+  //       return {
+  //         photo: result.picture.large,
+  //         name: `${result.name.first} ${result.name.last}`,
+  //         text:
+  //           "Hello world! This is a long message that needs to be truncated."
+  //       }
+  //     })
+  //     setConversations([...conversations, ...newConversations])
+  //   })
+  // }
 
   const ChatListProvider = ({ children }) => {
     const store = {
@@ -58,7 +58,7 @@ export default function ConversationList(props) {
           return {
             photo: doc.data().image,
             name: `${doc.data().firstname} ${doc.data().lastname}`,
-            text: "TEST MESSAGE",
+            text: doc.data().message,
             roomId: doc.id
           }
         }
