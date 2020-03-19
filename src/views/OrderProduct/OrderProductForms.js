@@ -524,7 +524,7 @@ class OrderProductForms extends Component {
           isOpen={this.state.updateModal}
           toggle={() => this.toggleUpdate(orderId, trackingCode)}
         >
-          <ModalHeader>ยกเลิกรายการ</ModalHeader>
+          <ModalHeader>อัพเดทรายการ</ModalHeader>
           <ModalBody>
             ท่านต้องการอัพเดทรายการสั่งซือที่
             <strong> {orderId || ""} </strong> ใช่หรือไม่
