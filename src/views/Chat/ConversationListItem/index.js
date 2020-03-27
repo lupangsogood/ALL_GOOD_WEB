@@ -13,7 +13,7 @@ export default function ConversationListItem(props) {
   const { photo, name, text, roomId } = props.data
 
   const getRoomIdFromClick = () => {
-    props.callback(roomId)
+    props.callback(roomId, photo)
   }
   return (
     <div
@@ -22,7 +22,13 @@ export default function ConversationListItem(props) {
         getRoomIdFromClick()
       }}
     >
-      <img className="conversation-photo" src={photo} alt="conversation" />
+      <img
+        className="conversation-photo"
+        width="100px"
+        height="100px"
+        src={photo}
+        alt="conversation"
+      />
       <div className="conversation-info">
         <h1 className="conversation-title">{name}</h1>
         <p className="conversation-snippet">{text}</p>

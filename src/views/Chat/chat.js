@@ -9,10 +9,11 @@ export const ChatListStoreContext = React.createContext()
 
 export default function ChatList(props) {
   const [roomIdStore, setRoomIdStore] = useState()
-
+  const [photoUser, setPhotoUser] = useState()
   const RoomIdStoreProvider = ({ children }) => {
     const store = {
-      roomId: roomIdStore
+      roomId: roomIdStore,
+      photo: photoUser
     }
     return (
       <RoomIdStoreContext.Provider value={store}>
@@ -29,8 +30,10 @@ export default function ChatList(props) {
       .get()
       .then(doc => {
         const data = doc.docs.map(doc => {
-          getRoomId(doc.id)
+          // getRoomId(doc.id)
+          getPhotoOnce(doc.id)
         })
+
         // getRoomId(data.id)
       })
       .catch(err => {
@@ -38,13 +41,32 @@ export default function ChatList(props) {
       })
   }
 
+  const getPhotoOnce = roomId => {
+    var docRef = db.collection("chat").doc(roomId)
+    docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          console.log("Document data:", doc.data())
+          getRoomId(roomId, doc.data().image)
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!")
+        }
+      })
+      .catch(error => {
+        console.log("Error getting document:", error)
+      })
+  }
+
   useEffect(() => {
     getDataOnce()
   }, [])
 
-  const getRoomId = roomId => {
+  const getRoomId = (roomId, photo) => {
     console.log("CHECK" + roomId)
     setRoomIdStore(roomId)
+    setPhotoUser(photo)
   }
 
   //ทำ callBack ให้ตอนกดเลือก Chat

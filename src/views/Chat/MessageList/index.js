@@ -11,7 +11,7 @@ import { RoomIdStoreContext } from "../chat"
 
 export default function MessageList(props) {
   let roomIdData = useContext(RoomIdStoreContext)
-  console.log(roomIdData)
+  console.log(roomIdData.photo)
   const [messages, setMessages] = useState([])
   const [roomId, setRoomId] = useState({
     roomIdState: "roomIdData"
@@ -150,6 +150,7 @@ export default function MessageList(props) {
           endsSequence={endsSequence}
           showTimestamp={showTimestamp}
           data={current}
+          photo={roomIdData.photo}
         />
       )
       // Proceed to the next message.
@@ -200,7 +201,7 @@ export default function MessageList(props) {
 
   return (
     <div className="message-list">
-      <Toolbar title="Conversation Title" />
+      <Toolbar title="Conversation" />
       <div className="message-list-container">{renderMessages()}</div>
       <Compose addMessage={sendData} />
     </div>
