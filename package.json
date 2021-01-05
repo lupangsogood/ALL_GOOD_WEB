@@ -7,7 +7,7 @@
     "@coreui/icons": "^0.3.0",
     "@coreui/react": "^2.5.7",
     "@material-ui/icons": "^4.9.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "firebase": "^7.10.0",
     "firebase-admin": "^8.9.2",
